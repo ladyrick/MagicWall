@@ -87,6 +87,12 @@ class MagicWall {
         }
         this._transfer(address, this.vault);
     }
+    getVault(){
+        if (!this._validateAdmin()) {
+            return;
+        }
+        return this.vault.toString();
+    }
 
 
     // user functions:
@@ -98,7 +104,7 @@ class MagicWall {
         console.log("saved: " + words);
     }
     get() {
-        var storage_get = [];
+        var storage_get = [Blockchain.transaction.from];
         for (let i = 0; i < this.size; i++) {
             storage_get.push(this.storage.get(i));
         }

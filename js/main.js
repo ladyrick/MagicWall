@@ -9,22 +9,18 @@ var Account = require("nebulas").Account;
 var Transaction = require("nebulas").Transaction;
 var Unit = require("nebulas").Unit;
 var neb = new Neb();
-neb.setRequest(new HttpRequest(callbackUrl));
+neb.setRequest(new HttpRequest(netConfig.callbackURL));
 var NebPay = require("nebpay");
 var nebPay = new NebPay();
 
 
 function getWords() {
-    var tmpaccount = Account.NewAccount();
-    neb.api.getAccountState(tmpaccount.getAddressString()).then(function (state) {
+    var tmpaccount = Account.NewAccount().getAddressString();
+    neb.api.getAccountState(tmpaccount).then(function (state) {
         state = state.result || state;
-        if (parseInt(state.balance) > 0) {
-            console.log("temp account balance = " + state.balance);
-            console.log("temp account nonce = " + state.nonce);
-        }
         neb.api.call({
-            chainID: 100,
-            from: tmpaccount.getAddressString(),
+            chainID: netConfig.chainID,
+            from: tmpaccount,
             to: contractAddress,
             value: 0,
             nonce: parseInt(state.nonce) + 1,
@@ -63,7 +59,7 @@ function onCallClick() {
             name: "add",
             desc: "add words"
         },
-        callback: callbackUrl,
+        callback: netConfig.callbackURL,
         listener: null
     });
 }
@@ -79,7 +75,7 @@ function onDeployContract() {
             name: "deploy",
             desc: "deploy smart-contract"
         },
-        callback: callbackUrl,
+        callback: netConfig.callbackURL,
         listener: function (resp) {
             console.warn(resp);
             document.getElementById("txhash").textContent
@@ -100,8 +96,38 @@ function testWithdrawNASToAdmin() {
             name: "withdraw",
             desc: "withdraw NAS to admin"
         },
-        callback: callbackUrl,
+        callback: netConfig.callbackURL,
         listener: null
     });
 }
 
+function testGetVault() {
+    var tmpaccount = Account.NewAccount().getAddressString();
+    neb.api.getAccountState(tmpAddress).then(function (state) {
+        state = state.result || state;
+        neb.api.call({
+            chainID: netConfig.chainID,
+            from: tmpAddress,
+            to: contractAddress,
+            value: 0,
+            nonce: parseInt(state.nonce) + 1,
+            gasPrice: 1000000,
+            gasLimit: 2000000,
+            contract: {
+                function: "getVault",
+                args: ""
+            }
+        }).then(function (tx) {
+            console.log(tx.result);
+            if (tx.result === "") {
+                throw new Error(contractAddress +
+                    " is not a smart-contract address!");
+            }
+            console.log("contract vault: " + tx.result)
+        }).catch(function (err) {
+            console.log(err);
+        });
+    }).catch(function (err) {
+        console.log(err);
+    });
+}
