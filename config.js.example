@@ -1,0 +1,15 @@
+// rename this "config.js.example" to "config.js".
+
+
+// callbackUrl: the Nebulas Net.
+// could be these net:
+// mainnet: https://mainnet.nebulas.io
+// testnet: https://testnet.nebulas.io
+// localnet: http://127.0.0.1:8685
+// or some remote net, such as http://xxx.xxx.xxx.xxx:8685
+var callbackUrl = "http://127.0.0.1:8685";
+
+
+// contract address.
+// you can get it after deploying a smart-contract.
+var contractAddress = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
