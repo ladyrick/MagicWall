@@ -3,51 +3,35 @@ document.getElementById("submit").onclick = onCallClick;
 document.getElementById("deploy").onclick = onDeployContract;
 
 
-var HttpRequest = require("nebulas").HttpRequest;
-var Neb = require("nebulas").Neb;
-var Account = require("nebulas").Account;
-var Transaction = require("nebulas").Transaction;
-var Unit = require("nebulas").Unit;
-var neb = new Neb();
-neb.setRequest(new HttpRequest(netConfig.callbackURL));
-var NebPay = require("nebpay");
-var nebPay = new NebPay();
+var nebPay = new (require("nebpay"))();
+getWords();
+function log(str) {
+    console.log("%c" + str, "color:red");
+}
 
 
 function getWords() {
-    var tmpaccount = Account.NewAccount().getAddressString();
-    neb.api.getAccountState(tmpaccount).then(function (state) {
-        state = state.result || state;
-        neb.api.call({
-            chainID: netConfig.chainID,
-            from: tmpaccount,
-            to: contractAddress,
-            value: 0,
-            nonce: parseInt(state.nonce) + 1,
-            gasPrice: 1000000,
-            gasLimit: 2000000,
-            contract: {
-                function: "get",
-                args: ""
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "get";
+    var callArgs = "";
+    nebPay.simulateCall(to, value, callFunction, callArgs, {
+        goods: {
+            name: "get",
+            desc: "get words"
+        },
+        callback: netConfig.callbackURL,
+        listener: function (resp) {
+            if (!resp.execute_err) {
+                for (let r of JSON.parse(resp.result)) {
+                    log(r);
+                }
+            } else {
+                console.error("execute err.");
             }
-        }).then(function (tx) {
-            console.log(tx.result);
-            if (tx.result === "") {
-                throw new Error(contractAddress +
-                    " is not a smart-contract address!");
-            }
-            for (let r of JSON.parse(tx.result)) {
-                console.log(r);
-            }
-        }).catch(function (err) {
-            console.log(err);
-        });
-    }).catch(function (err) {
-        console.log(err);
+        }
     });
 }
-
-getWords();
 
 function onCallClick() {
     var to = contractAddress;
@@ -77,7 +61,6 @@ function onDeployContract() {
         },
         callback: netConfig.callbackURL,
         listener: function (resp) {
-            console.warn(resp);
             document.getElementById("txhash").textContent
                 = resp.txhash;
             document.getElementById("contractaddress").textContent
@@ -102,32 +85,20 @@ function testWithdrawNASToAdmin() {
 }
 
 function testGetVault() {
-    var tmpaccount = Account.NewAccount().getAddressString();
-    neb.api.getAccountState(tmpAddress).then(function (state) {
-        state = state.result || state;
-        neb.api.call({
-            chainID: netConfig.chainID,
-            from: tmpAddress,
-            to: contractAddress,
-            value: 0,
-            nonce: parseInt(state.nonce) + 1,
-            gasPrice: 1000000,
-            gasLimit: 2000000,
-            contract: {
-                function: "getVault",
-                args: ""
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "getVault";
+    var callArgs = "";
+    nebPay.simulateCall(to, value, callFunction, callArgs, {
+        goods: {
+            name: "testGetVault",
+            desc: "test getVault function"
+        },
+        callback: netConfig.callbackURL,
+        listener: function (resp) {
+            if (!resp.execute_err) {
+                log("vault: " + JSON.parse(resp.result));
             }
-        }).then(function (tx) {
-            console.log(tx.result);
-            if (tx.result === "") {
-                throw new Error(contractAddress +
-                    " is not a smart-contract address!");
-            }
-            console.log("contract vault: " + tx.result)
-        }).catch(function (err) {
-            console.log(err);
-        });
-    }).catch(function (err) {
-        console.log(err);
+        }
     });
 }

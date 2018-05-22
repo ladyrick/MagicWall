@@ -104,7 +104,7 @@ class MagicWall {
         console.log("saved: " + words);
     }
     get() {
-        var storage_get = [Blockchain.transaction.from];
+        var storage_get = [];
         for (let i = 0; i < this.size; i++) {
             storage_get.push(this.storage.get(i));
         }
