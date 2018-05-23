@@ -76,7 +76,7 @@ function testWithdrawNASToAdmin() {
     var to = contractAddress;
     var value = 0;
     var callFunction = "withdrawNASToAdmin";
-    var callArgs = JSON.stringify(["n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE"]);
+    var callArgs = JSON.stringify([0]);
     nebPay.call(to, value, callFunction, callArgs, {
         goods: {
             name: "withdraw",
