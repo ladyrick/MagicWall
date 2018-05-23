@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>管理员页面</title>
+    <script src="js/libs/nebPay.min.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body>
+    <textarea id="contract"></textarea>
+    <div id="deploy">部署合约</div>
+    <script src="js/utils.js"></script>
+    <script>
+        log(document.getElementById("contract").value)
+        document.getElementById("deploy").onclick =
+            () => deployContract(document.getElementById("contract").value);
+    </script>
+</body>
+
+</html>

@@ -129,7 +129,8 @@ function testGet() {
     }
     testOneGet();
     testOneGet(2);
-    testOneGet([1, 2]);
-    testOneGet([-1, 100]);
+    testOneGet(0);
+    testOneGet(-1);
+    testOneGet(100);
     testOneGet([1, 2, 3]);
 }

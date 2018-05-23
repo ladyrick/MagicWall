@@ -23,6 +23,11 @@ class MagicWall {
         this.feeRate = new BigNumber(0.05);
         this.vault = new BigNumber(0);
         this.mainnet_or_testnet = Blockchain.block.height > 100000;
+        //TODO: delete this 100 lines.
+        while (this.size < 100) {
+            this.storage.set(this.size, "" + this.size);
+            this.size++;
+        }
     }
 
     // admin functions:
@@ -112,34 +117,61 @@ class MagicWall {
         this._consolelog("Saved in storage: " + line);
         this._consolelog("There are " + this.size + " lines in storage.");
     }
-    get(range) {
-        var minrange, maxrange;
-        if (range === undefined) {
-            minrange = 0;
-            maxrange = this.size;
-        } else if (typeof (range) === "number") {
-            minrange = this.size - range;
-            maxrange = this.size;
-        } else if (range.constructor === Array && range.length === 2) {
-            minrange = range[0];
-            maxrange = range[1];
-        } else {
-            throw new Error("Range is not valid. A number or an array (length=2) is required.");
+    get(number) {
+        if (number === undefined) {
+            number = 60;
         }
+        if (typeof (number) !== "number"){
+            throw new Error("Input type error! A number required.");
+        }
+        this._consolelog("Ask for " + number + " lines.");
+        if (number > 60 && !this._validateAdmin()) {
+            this._consolelog("Only admin could get more than 60 lines.");
+            number = 60;
+        }
+
         this._checkValue();
+        
+        if (number <= 0) {
+            return [];
+        }
 
-        minrange = minrange > 0 ? minrange : 0;
-        maxrange = maxrange < this.size ? maxrange : this.size;
+        if (this.size === 0 && number > 0) {
+            return this.getIntroduce();
+        }
 
-        this._consolelog("Minrange = " + minrange);
-        this._consolelog("Maxrange = " + maxrange);
+        function randomPick(max, num) {
+            if (num >= max) {
+                return Array.from({ length: max }, (x, i) => i);
+            }
+            var temp = Array.from({ length: max }, (x, i) => i);
+            for (var i = 0; i < num; i++) {
+                var j = Math.floor(Math.random() * (max - i)) + i;
+                if (i !== j) {
+                    var t = temp[i];
+                    temp[i] = temp[j];
+                    temp[j] = t;
+                }
+            }
+            return temp.slice(0, num);
+        }
+
         var storage_get = [];
-        for (let i = minrange; i < maxrange; i++) {
+        for (let i of randomPick(this.size, number)) {
             storage_get.push(this.storage.get(i));
         }
         this._consolelog("Get from storage:");
         this._consolelog(storage_get);
         return storage_get;
+    }
+    getIntroduce() {
+        this._checkValue();
+        return [JSON.stringify({
+            to: "亲爱的用户",
+            from: "管理员先生",
+            say: "介绍"
+            //TODO: complete the introduce.
+        })];
     }
 }
 
