@@ -6,7 +6,7 @@ document.getElementById("deploy").onclick = onDeployContract;
 var nebPay = new (require("nebpay"))();
 getWords();
 function log(str) {
-    console.log("%c" + str, "color:red");
+    console.log("%c" + str.toString(), "color:red");
 }
 
 
@@ -23,11 +23,14 @@ function getWords() {
         callback: netConfig.callbackURL,
         listener: function (resp) {
             if (!resp.execute_err) {
+                if (resp.result === "[]") {
+                    log("got nothing.");
+                }
                 for (let r of JSON.parse(resp.result)) {
                     log(r);
                 }
             } else {
-                console.error("execute err.");
+                console.error(resp.execute_err);
             }
         }
     });
@@ -73,7 +76,7 @@ function testWithdrawNASToAdmin() {
     var to = contractAddress;
     var value = 0;
     var callFunction = "withdrawNASToAdmin";
-    var callArgs = "";
+    var callArgs = JSON.stringify(["n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE"]);
     nebPay.call(to, value, callFunction, callArgs, {
         goods: {
             name: "withdraw",
@@ -101,4 +104,44 @@ function testGetVault() {
             }
         }
     });
+}
+
+function testUpdateAdminAddress() {
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "updateAdminAddress";
+    var callArgs = JSON.stringify(["n1SQe5d1NKHYFMKtJ5sNHPsSPVavGzW71Wy"]);
+    nebPay.call(to, value, callFunction, callArgs, {
+        goods: {
+            name: "testUpdateAdminAddress",
+            desc: "test updateAdminAddress function"
+        },
+        callback: netConfig.callbackURL,
+        listener: null
+    });
+}
+
+function testGet() {
+    function testOneGet(arg) {
+        var to = contractAddress;
+        var value = 0;
+        var callFunction = "get";
+        var callArgs = arg === undefined ? "" : JSON.stringify([arg]);
+        nebPay.simulateCall(to, value, callFunction, callArgs, {
+            goods: {
+                name: "testGet",
+                desc: "test get function"
+            },
+            callback: netConfig.callbackURL,
+            listener: function (resp) {
+                console.log(callArgs);
+                console.log(resp);
+            }
+        });
+    }
+    testOneGet();
+    testOneGet(2);
+    testOneGet([1, 2]);
+    testOneGet([-1, 100]);
+    testOneGet([1, 2, 3]);
 }
