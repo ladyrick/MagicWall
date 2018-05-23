@@ -1,16 +1,152 @@
-textarea {
-    width: 300px;
-    height: 100px;
-    resize: none;
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #E46B6C;
 }
 
-#submit,
-#deploy {
-    width: 300px;
+#container {
+    width: 1000px;
+    height: 650px;
+    background: #FDEEB2;
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    bottom: 50%;
+    margin-left: -500px;
+    margin-top: -325px;
+    box-shadow: 0 0 5px 0 #FDEEB2;
+    z-index: -2;
+}
+
+#container::before,
+#container::after {
+    content: "";
+    position: absolute;
+    width: 1020px;
+    height: 14px;
+    border-radius: 7px;
+    background-size: 50px 15px;
+    background-image: linear-gradient(-45deg, #BF313F 25%, white 25%, white 75%, #BF313F 75%);
+    z-index: -1;
+}
+
+#container::before {
+    left: 0;
+    top: 0;
+    margin-left: -10px;
+    margin-top: -7px;
+    box-shadow: 0 -1px 1px 0 #BF313F, 1px 0 1px 0 #BF313F, -1px 0 1px 0 #BF313F;
+}
+
+#container::after {
+    right: 0;
+    bottom: 0;
+    margin-right: -10px;
+    margin-bottom: -7px;
+    box-shadow: 0 1px 1px 0 #BF313F, 1px 0 1px 0 #BF313F, -1px 0 1px 0 #BF313F;
+}
+
+#title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 60px;
+    background: #f0f0f0;
+    margin: -30px auto 0;
+    user-select: none;
+    border-radius: 10px;
+}
+
+#title img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+#title div {
+    font-size: 30px;
+    margin-bottom: 3px;
+}
+
+#content {
+    /* background: aqua; */
+    width: 800px;
+    height: 482px;
+    margin: 30px auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: white;
+    width: 210px;
+    height: 166px;
+}
+
+.card div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card .to {
+    background: rgb(195, 195, 255);
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+}
+
+.card .to::before {
+    content: "To: ";
+    margin-left: 10px;
+    width: 50px;
+}
+
+#control {
+    width: 80%;
     height: 40px;
-    line-height: 40px;
-    border: 1px solid;
-    border-radius: 5px;
+    /* background: pink; */
+    margin: 30px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    width: 130px;
+    height: 30px;
+    font-size: 20px;
+    background: #eee;
+    border-radius: 3px;
     text-align: center;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 30px;
+}
+
+#dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#dots div {
+    width: 10px;
+    height: 10px;
+    background: rgb(145, 145, 145);
+    border-radius: 10px;
+    margin: 0 5px;
     cursor: pointer;
+}
+
+#dots div.active {
+    background: rgb(97, 97, 97);
+    width: 12px;
+    height: 12px;
+    margin: 0 4px;
 }
