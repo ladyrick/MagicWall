@@ -25,11 +25,11 @@ class MagicWall {
         this.mainnet_or_testnet = Blockchain.block.height > 100000;
         //TODO: delete this 100 lines.
         while (this.size < 100) {
-            this.storage.set(this.size, JSON.stringify({
+            this.storage.set(this.size, {
                 to: this.size,
                 from: this.size,
                 say: this.size
-            }));
+            });
             this.size++;
         }
     }
@@ -116,10 +116,14 @@ class MagicWall {
     // user functions:
     save(line) {
         this._checkValue();
-        this.storage.set(this.size, line);
-        this.size++;
-        this._consolelog("Saved in storage: " + line);
-        this._consolelog("There are " + this.size + " lines in storage.");
+        if (typeof (line) === "object" && "to" in line && "from" in line && "say" in line) {
+            this.storage.set(this.size, line);
+            this.size++;
+            this._consolelog("Saved in storage: " + JSON.stringify(line));
+            this._consolelog("There are " + this.size + " lines in storage.");
+        } else {
+            throw new Error("An object is required. Format: {to:\"to\",from:\"from\",say:\"say\"}");
+        }
     }
     get(number) {
         if (number === undefined) {
@@ -170,12 +174,12 @@ class MagicWall {
     }
     getIntroduce() {
         this._checkValue();
-        return [JSON.stringify({
+        return [{
             to: "亲爱的用户",
             from: "管理员先生",
             say: "介绍"
             //TODO: complete the introduce.
-        })];
+        }];
     }
 }
 

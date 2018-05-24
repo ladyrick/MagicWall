@@ -12,15 +12,6 @@ function makeCards(cards) {
             from: "nowhere",
             say: "不好意思，看起来还没有人表白过呢？\n爱就大声说出来吧！"
         }];
-    } else {
-        cards = cards.map((c) => {
-            try {
-                return JSON.parse(c);
-            }
-            catch (e) {
-                return 0;
-            }
-        }).filter((c) => typeof (c) === "object" && "to" in c && "from" in c && "say" in c)
     }
     var num = Math.min(cards.length, 60);
     var pages = Math.ceil(num / 6);
@@ -38,7 +29,7 @@ function makeCards(cards) {
             return function () {
                 Array.prototype.forEach.call(dots.children, function (d) {
                     d.classList.remove("active");
-                })
+                });
                 dot.classList.add("active");
                 cardgroup.innerHTML = "";
                 for (var j = i * 6; j < i * 6 + 6 && j < num; j++) {
@@ -78,4 +69,3 @@ getLines(function (resp) {
         console.error(resp.execute_err);
     }
 });
-

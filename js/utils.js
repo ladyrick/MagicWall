@@ -22,14 +22,14 @@ function getLines(listener) {
 }
 
 function saveLines(from, to, say) {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "save";
-    var line = JSON.stringify({
+    var line = {
         from: from,
         to: to,
         say: say
-    });
+    };
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "save";
     var callArgs = JSON.stringify([line]);
     log(callArgs);
     nebPay.call(to, value, callFunction, callArgs, {
