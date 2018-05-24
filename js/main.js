@@ -147,8 +147,8 @@ function makeCards(cards) {
 }
 
 function init() {
-    getLines(function (resp) {
-        if (!resp.execute_err) {
+    getLinesUsingNebulasJS(function (resp) {
+        if (resp.result) {
             window.cards = JSON.parse(resp.result);
             window.cards = window.cards.map((c, i) => ({
                 to: c.to || "一个幸福的人",

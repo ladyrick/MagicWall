@@ -21,6 +21,38 @@ function getLines(listener) {
     });
 }
 
+function getLinesUsingNebulasJS(listener) {
+    var HttpRequest = require("nebulas").HttpRequest;
+    var Neb = require("nebulas").Neb;
+    var neb = new Neb();
+    neb.setRequest(new HttpRequest(netConfig.callbackURL));
+
+    // Just a random account. Not admin account.
+    // Could be replaced to any valid account address.
+    var tmpaccount = "n1aWvANFRN4FU1CVhxaMXCyc5vs73ikvJmy";
+    neb.api.getAccountState(tmpaccount).then(function (state) {
+        state = state.result || state;
+        neb.api.call({
+            chainID: netConfig.chainID,
+            from: tmpaccount,
+            to: contractAddress,
+            value: 0,
+            nonce: parseInt(state.nonce) + 1,
+            gasPrice: 1000000,
+            gasLimit: 2000000,
+            contract: {
+                function: "get",
+                args: ""
+            }
+        }).then(listener)
+            .catch(function (err) {
+                console.error(err);
+            });
+    }).catch(function (err) {
+        console.error(err);
+    });
+}
+
 function saveLine(line, listener) {
     var to = contractAddress;
     var value = 0;
