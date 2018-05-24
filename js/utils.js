@@ -21,7 +21,7 @@ function getLines(listener) {
     });
 }
 
-function saveLine(line) {
+function saveLine(line, listener) {
     var to = contractAddress;
     var value = 0;
     var callFunction = "save";
@@ -33,7 +33,7 @@ function saveLine(line) {
             desc: "add words"
         },
         callback: netConfig.callbackURL,
-        listener: null
+        listener: listener
     });
 }
 

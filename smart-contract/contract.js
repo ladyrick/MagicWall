@@ -167,20 +167,13 @@ class MagicWall {
 
         var storage_get = [];
         for (let i of randomPick(this.size, number)) {
-            storage_get.push(this.storage.get(i));
+            var line = this.storage.get(i);
+            line.id = i
+            storage_get.push(line);
         }
         this._consolelog("Get from storage:");
         this._consolelog(storage_get);
         return storage_get;
-    }
-    getIntroduce() {
-        this._checkValue();
-        return [{
-            to: "亲爱的用户",
-            from: "管理员先生",
-            say: "介绍"
-            //TODO: complete the introduce.
-        }];
     }
 }
 
