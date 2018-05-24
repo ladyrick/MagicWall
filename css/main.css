@@ -70,10 +70,114 @@ body {
 }
 
 #content {
-    /* background: aqua; */
+    position: relative;
     width: 800px;
     height: 482px;
     margin: 30px auto;
+}
+
+.vanish {
+    transition: 0.5s;
+    opacity: 0;
+}
+
+#bigcard {
+    position: absolute;
+    left: 100px;
+    right: 100px;
+    top: 51px;
+    bottom: 51px;
+    z-index: 1;
+    background: white;
+}
+
+#bigcard::before {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    left: -40px;
+    top: -40px;
+    background-image: url(../img/iconfont-heart.svg);
+    background-size: 80px 80px;
+}
+
+#bigcard .to,
+#bigcard .from {
+    user-select: none;
+    height: 60px;
+    font-size: 24px;
+    line-height: 60px;
+    padding: 0 40px;
+}
+
+#bigcard .to .towhom,
+#bigcard .from .fromwhom {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: inherit;
+    font-family: inherit;
+    height: inherit;
+    border: none;
+    padding: 0;
+    outline: none;
+    color:inherit;
+    background: transparent;
+}
+
+#bigcard .to {
+    background: rgb(195, 195, 255);
+}
+
+#bigcard .to .label {
+    float: left;
+    width: 40px;
+}
+
+#bigcard .to .towhom {
+    float: left;
+    width: 480px;
+}
+
+#bigcard .from .label {
+    float: right;
+    width: 70px;
+}
+
+#bigcard .from .fromwhom {
+    float: right;
+    max-width: 450px;
+}
+
+#bigcard .from input.fromwhom{
+    width: 450px;
+}
+
+#bigcard .say {
+    height: 270px;
+    overflow-x: hidden;
+    margin-bottom: -10px;
+}
+
+#bigcard .say textarea {
+    width: 550px;
+    height: 260px;
+    padding: 0 40px;
+    resize: none;
+    font-size: 20px;
+    border: none;
+    background: transparent;
+    color: black;
+    font-family: inherit;
+}
+
+#cardgroup {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -87,7 +191,7 @@ body {
     height: 200px;
 }
 
-.card::after {
+.card::before {
     content: "";
     position: absolute;
     width: 40px;
@@ -106,7 +210,6 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     user-select: none;
-    width: 170px;
     height: 40px;
     line-height: 40px;
     padding: 0 20px;
@@ -128,11 +231,12 @@ body {
     content: "From: ";
 }
 
-.card .say{
+.card .say {
     height: 130px;
     overflow-x: hidden;
     margin-bottom: -10px;
 }
+
 .card .say textarea {
     width: 190px;
     height: 120px;
@@ -140,7 +244,7 @@ body {
     resize: none;
     font-size: 16px;
     border: none;
-    background: white;
+    background: transparent;
     color: black;
     font-family: inherit;
 }
