@@ -21,12 +21,7 @@ function getLines(listener) {
     });
 }
 
-function saveLines(from, to, say) {
-    var line = {
-        from: from,
-        to: to,
-        say: say
-    };
+function saveLine(line) {
     var to = contractAddress;
     var value = 0;
     var callFunction = "save";
@@ -58,6 +53,17 @@ function deployContract(contractSourceCode) {
             log("contractaddress: " + resp.contract_address);
         }
     });
+}
+
+function testSaveLine1() {
+    saveLine({ to: 1, from: 2, say: 3 });
+}
+function testSaveLine2() {
+    saveLine({ to: 1, from: 2 });
+}
+
+function testSaveLine3() {
+    saveLine(JSON.stringify({ to: 1, from: 2, say: 3 }));
 }
 
 function testWithdrawNASToAdmin() {

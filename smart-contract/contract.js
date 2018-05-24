@@ -122,6 +122,7 @@ class MagicWall {
             this._consolelog("Saved in storage: " + JSON.stringify(line));
             this._consolelog("There are " + this.size + " lines in storage.");
         } else {
+            this._consolelog("Receoved: " + JSON.stringify(line));
             throw new Error("An object is required. Format: {to:\"to\",from:\"from\",say:\"say\"}");
         }
     }
