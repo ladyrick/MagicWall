@@ -20,7 +20,6 @@ class MagicWall {
     init() {
         this.size = 0;
         this.adminAddress = Blockchain.transaction.from;
-        this.feeRate = new BigNumber(0.05);
         this.vault = new BigNumber(0);
         this.mainnet_or_testnet = Blockchain.block.height > 100000;
         //TODO: delete this 100 lines.
@@ -101,7 +100,7 @@ class MagicWall {
             throw new Error("The address is not a valid user wallet address!");
         }
         this._transfer(address, this.vault);
-        this._consolelog(this.vault.toString() + " remained.");
+        this._consolelog(this.vault.toString() + " wei remained.");
     }
     getVault() {
         if (!this._validateAdmin()) {
@@ -135,18 +134,13 @@ class MagicWall {
         }
         this._consolelog("Ask for " + number + " lines.");
         if (number > 60 && !this._validateAdmin()) {
-            this._consolelog("Only admin could get more than 60 lines.");
-            number = 60;
+            throw new Error("Only admin could get more than 60 lines.");
         }
 
         this._checkValue();
 
-        if (number <= 0) {
+        if (number <= 0 || this.size === 0) {
             return [];
-        }
-
-        if (this.size === 0 && number > 0) {
-            return this.getIntroduce();
         }
 
         function randomPick(max, num) {
@@ -174,6 +168,21 @@ class MagicWall {
         this._consolelog("Get from storage:");
         this._consolelog(storage_get);
         return storage_get;
+    }
+    getByID(id) {
+        if (typeof id !== "number") {
+            throw new Error("ID must be a positive integer!");
+        }
+        id = parseInt(id);
+        if (id < 0) {
+            throw new Error("ID must be a positive integer!");
+        }
+        if (id > this.size) {
+            throw new Error("Not found.");
+        }
+        var line = this.storage.get(id);
+        line.id = id
+        return line;
     }
 }
 

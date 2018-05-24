@@ -175,3 +175,21 @@ function testGet() {
     testOneGet(100);
     testOneGet([1, 2, 3]);
 }
+
+function testGetByID(id, listener) {
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "getByID";
+    var callArgs = JSON.stringify([id]);
+    nebPay.simulateCall(to, value, callFunction, callArgs, {
+        goods: {
+            name: "testGetByID",
+            desc: "test getByID function"
+        },
+        callback: netConfig.callbackURL,
+        listener: function (resp) {
+            log(callArgs);
+            console.log(resp);
+        }
+    });
+}
