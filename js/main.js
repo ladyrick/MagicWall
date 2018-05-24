@@ -6,12 +6,21 @@ function makeBigCard(editable = false) {
 
 function makeCards(cards) {
     // only show at most 60 cards.
-    if (!cards) {
+    if (cards.length === 0) {
         cards = [{
             to: "nobody",
             from: "nowhere",
             say: "不好意思，看起来还没有人表白过呢？\n爱就大声说出来吧！"
         }];
+    } else {
+        cards = cards.map((c) => {
+            try {
+                return JSON.parse(c);
+            }
+            catch (e) {
+                return 0;
+            }
+        }).filter((c) => typeof (c) === "object" && "to" in c && "from" in c && "say" in c)
     }
     var num = Math.min(cards.length, 60);
     var pages = Math.ceil(num / 6);
@@ -25,13 +34,15 @@ function makeCards(cards) {
     for (var i = 0; i < pages; i++) {
         var dot = document.createElement("div");
         dots.appendChild(dot);
-        var clickFunc = function () {
+        var clickFunc = function (i, dot) {
             return function () {
-                console.log(i);
+                Array.prototype.forEach.call(dots.children, function (d) {
+                    d.classList.remove("active");
+                })
                 dot.classList.add("active");
                 cardgroup.innerHTML = "";
                 for (var j = i * 6; j < i * 6 + 6 && j < num; j++) {
-                    var msg = JSON.parse(cards[j]);
+                    var msg = cards[j];
                     var card = document.createElement("div");
                     card.classList.add("card");
                     var to = document.createElement("div");
@@ -55,8 +66,9 @@ function makeCards(cards) {
                 }
             }
         }
-        dot.onclick = clickFunc();
+        dot.onclick = clickFunc(i, dot);
     }
+    dots.children[0].click();
 }
 
 getLines(function (resp) {

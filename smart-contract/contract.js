@@ -25,7 +25,11 @@ class MagicWall {
         this.mainnet_or_testnet = Blockchain.block.height > 100000;
         //TODO: delete this 100 lines.
         while (this.size < 100) {
-            this.storage.set(this.size, "" + this.size);
+            this.storage.set(this.size, JSON.stringify({
+                to: this.size,
+                from: this.size,
+                say: this.size
+            }));
             this.size++;
         }
     }
@@ -121,7 +125,7 @@ class MagicWall {
         if (number === undefined) {
             number = 60;
         }
-        if (typeof (number) !== "number"){
+        if (typeof (number) !== "number") {
             throw new Error("Input type error! A number required.");
         }
         this._consolelog("Ask for " + number + " lines.");
@@ -131,7 +135,7 @@ class MagicWall {
         }
 
         this._checkValue();
-        
+
         if (number <= 0) {
             return [];
         }
