@@ -97,7 +97,7 @@ class MagicWall {
         this._checkValue();
         if (!address) {
             address = this.adminAddress;
-        } else if (typeof (address) !== "string" || Blockchain.verifyAddress(address) !== 87) {
+        } else if (typeof address !== "string" || Blockchain.verifyAddress(address) !== 87) {
             throw new Error("The address is not a valid user wallet address!");
         }
         this._transfer(address, this.vault);
@@ -116,13 +116,13 @@ class MagicWall {
     // user functions:
     save(line) {
         this._checkValue();
-        if (typeof (line) === "object" && "to" in line && "from" in line && "say" in line) {
+        if (typeof line === "object" && "to" in line && "from" in line && "say" in line) {
             this.storage.set(this.size, line);
             this.size++;
             this._consolelog("Saved in storage: " + JSON.stringify(line));
             this._consolelog("There are " + this.size + " lines in storage.");
         } else {
-            this._consolelog("Receoved: " + JSON.stringify(line));
+            this._consolelog("Received: " + JSON.stringify(line));
             throw new Error("An object is required. Format: {to:\"to\",from:\"from\",say:\"say\"}");
         }
     }
@@ -130,7 +130,7 @@ class MagicWall {
         if (number === undefined) {
             number = 60;
         }
-        if (typeof (number) !== "number") {
+        if (typeof number !== "number") {
             throw new Error("Input type error! A number required.");
         }
         this._consolelog("Ask for " + number + " lines.");
