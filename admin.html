@@ -6,15 +6,37 @@
     <title>管理员页面</title>
     <script src="js/libs/nebPay.min.js"></script>
     <script src="config.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #contract,
+        #address {
+            font-family: Consolas, "Ubuntu Mono", monospace;
+        }
+
+        #contract {
+            width: 500px;
+            height: 309px;
+        }
+
+        #deploy {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
-    <textarea id="contract"></textarea>
-    <div id="deploy">部署合约</div>
+    <textarea id="contract" autofocus="autofocus"></textarea>
+    <h1 id="deploy">部署合约</h1>
+    <h1 id="address"></h1>
     <script src="js/utils.js"></script>
     <script>
         document.getElementById("deploy").onclick =
-            () => deployContract(document.getElementById("contract").value);
+            () => deployContract(document.getElementById("contract").value,
+                (resp) => document.getElementById("address").textContent = resp.contract_address);
     </script>
 </body>
 

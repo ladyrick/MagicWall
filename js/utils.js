@@ -37,7 +37,7 @@ function saveLine(line, listener) {
     });
 }
 
-function deployContract(contractSourceCode) {
+function deployContract(contractSourceCode, listener) {
     if (contractSourceCode === "") {
         console.error("Contract source code needed.");
         return;
@@ -51,6 +51,9 @@ function deployContract(contractSourceCode) {
         listener: function (resp) {
             log("txhash: " + resp.txhash);
             log("contractaddress: " + resp.contract_address);
+            if (typeof (listener) === "function") {
+                listener(resp);
+            }
         }
     });
 }
