@@ -338,3 +338,12 @@ body {
     font-size: 24px;
     padding: 10px 30px;
 }
+
+#pop div::after {
+    content: "×";
+    position: absolute;
+    font-size: 30px;
+    line-height: 44px;
+    right: 20px;
+    top: 0px;
+}
