@@ -212,7 +212,7 @@ function testDeleteBadLines(ids, listener) {
     });
 }
 
-function testGetSize(listener){
+function testGetSize(listener) {
     var to = contractAddress;
     var value = 0;
     var callFunction = "getSize";
@@ -221,6 +221,23 @@ function testGetSize(listener){
         goods: {
             name: "testGetSize",
             desc: "test getSize function"
+        },
+        callback: netConfig.callbackURL,
+        listener: function (resp) {
+            console.log(resp);
+        }
+    });
+}
+
+function testSaveManyLines(lines, listener){
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "saveManyLines";
+    var callArgs = JSON.stringify([lines]);
+    nebPay.call(to, value, callFunction, callArgs, {
+        goods: {
+            name: "testSaveManyLines",
+            desc: "test saveManyLines function"
         },
         callback: netConfig.callbackURL,
         listener: function (resp) {

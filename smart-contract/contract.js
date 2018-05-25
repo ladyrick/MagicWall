@@ -22,15 +22,6 @@ class MagicWall {
         this.adminAddress = Blockchain.transaction.from;
         this.vault = new BigNumber(0);
         this.mainnet_or_testnet = Blockchain.block.height > 100000;
-        //TODO: delete this 100 lines.
-        while (this.size < 100) {
-            this.storage.set(this.size, {
-                to: this.size,
-                from: this.size,
-                say: this.size
-            });
-            this.size++;
-        }
     }
 
     // admin functions:
@@ -73,6 +64,17 @@ class MagicWall {
         });
         this.vault = this.vault.sub(value);
         this._consolelog(value.toString() + " wei transfered to " + address);
+    }
+    _saveOneLine(line) {
+        if (typeof line === "object" && "to" in line && "from" in line && "say" in line) {
+            this.storage.set(this.size, line);
+            this.size++;
+            this._consolelog("Saved in storage: " + JSON.stringify(line));
+            this._consolelog("There are " + this.size + " lines in storage.");
+        } else {
+            this._consolelog("Received: " + JSON.stringify(line));
+            throw new Error("An object is required. Format: {to:\"to\",from:\"from\",say:\"say\"}");
+        }
     }
     updateAdminAddress(address) {
         if (!this._validateAdmin()) {
@@ -126,7 +128,7 @@ class MagicWall {
             throw new Error("ids must be an array of integers.");
         }
 
-        for (var id of ids) {
+        for (var id of ids.sort((i, j) => j - i)) {
             if (typeof id === "number" && id >= 0 && id < this.size) {
                 id = parseInt(id);
                 this._consolelog("deleted:");
@@ -137,20 +139,24 @@ class MagicWall {
             }
         }
     }
+    saveManyLines(lines) {
+        if (!this._validateAdmin()) {
+            return;
+        }
+        this._checkValue();
+        if (lines.constructor !== Array) {
+            throw new Error("lines must be an array of integers.");
+        }
+        for (var line of lines) {
+            this._saveOneLine(line);
+        }
+    }
 
 
     // user functions:
     save(line) {
         this._checkValue();
-        if (typeof line === "object" && "to" in line && "from" in line && "say" in line) {
-            this.storage.set(this.size, line);
-            this.size++;
-            this._consolelog("Saved in storage: " + JSON.stringify(line));
-            this._consolelog("There are " + this.size + " lines in storage.");
-        } else {
-            this._consolelog("Received: " + JSON.stringify(line));
-            throw new Error("An object is required. Format: {to:\"to\",from:\"from\",say:\"say\"}");
-        }
+        this._saveOneLine(line);
     }
     get(number) {
         if (number === undefined) {
