@@ -193,3 +193,38 @@ function testGetByID(id, listener) {
         }
     });
 }
+
+function testDeleteBadLines(ids, listener) {
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "deleteBadLines";
+    var callArgs = JSON.stringify([ids]);
+    nebPay.call(to, value, callFunction, callArgs, {
+        goods: {
+            name: "testDeleteBadLines",
+            desc: "test deleteBadLines function"
+        },
+        callback: netConfig.callbackURL,
+        listener: function (resp) {
+            log(callArgs);
+            console.log(resp);
+        }
+    });
+}
+
+function testGetSize(listener){
+    var to = contractAddress;
+    var value = 0;
+    var callFunction = "getSize";
+    var callArgs = "";
+    nebPay.simulateCall(to, value, callFunction, callArgs, {
+        goods: {
+            name: "testGetSize",
+            desc: "test getSize function"
+        },
+        callback: netConfig.callbackURL,
+        listener: function (resp) {
+            console.log(resp);
+        }
+    });
+}

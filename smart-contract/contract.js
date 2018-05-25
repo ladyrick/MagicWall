@@ -110,6 +110,33 @@ class MagicWall {
         this._consolelog(this.vault.toString() + " wei in this contract.");
         return this.vault.toString();
     }
+    getSize() {
+        if (!this._validateAdmin()) {
+            return;
+        }
+        this._checkValue();
+        return this.size;
+    }
+    deleteBadLines(ids) {
+        if (!this._validateAdmin()) {
+            return;
+        }
+        this._checkValue();
+        if (ids.constructor !== Array) {
+            throw new Error("ids must be an array of integers.");
+        }
+
+        for (var id of ids) {
+            if (typeof id === "number" && id >= 0 && id < this.size) {
+                id = parseInt(id);
+                this._consolelog("deleted:");
+                this._consolelog(this.storage.get(id));
+                this.storage.set(id, this.storage.get(this.size - 1));
+                this.storage.set(this.size - 1, { to: "deleted", from: "deleted", say: "deleted" });
+                this.size--;
+            }
+        }
+    }
 
 
     // user functions:
@@ -177,7 +204,7 @@ class MagicWall {
         if (id < 0) {
             throw new Error("ID must be a positive integer!");
         }
-        if (id > this.size) {
+        if (id >= this.size) {
             throw new Error("Not found.");
         }
         var line = this.storage.get(id);
