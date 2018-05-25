@@ -14,13 +14,21 @@ function makeBigCard(edit, data) {
         var rightbtn = document.getElementById("rightbtn");
         rightbtn.textContent = "送我上墙";
         rightbtn.onclick = function () {
-            saveLine({
-                to: towhom.value,
-                from: fromwhom.value,
-                say: textarea.value
-            }, function () {
-                makeCards(window.cards);
-            });
+            if (window.webExtensionWallet) {
+                saveLine({
+                    to: towhom.value,
+                    from: fromwhom.value,
+                    say: textarea.value
+                }, function () {
+                    makeCards(window.cards);
+                });
+            } else {
+                var pop = document.getElementById("pop");
+                pop.classList.remove("vanish");
+                pop.onclick = function () {
+                    pop.classList.add("vanish");
+                }
+            }
         };
     }
 
