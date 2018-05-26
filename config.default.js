@@ -1,4 +1,4 @@
-// rename this "config.js.example" to "config.js" if you need some private config.
+// copy this file and rename it to "config.js" if you need some private config.
 
 
 var mainnet = {
@@ -16,8 +16,8 @@ var localnet = {
 
 // netConfig: the Nebulas Net Config.
 // you can use the preset config, or you can config on your own.
-// var netConfig = mainnet;
-var netConfig = testnet;
+var netConfig = mainnet;
+// var netConfig = testnet;
 // var netConfig = localnet;
 // var netConfig = {
 //     callbackURL: "http://remoteurl:8685",
@@ -26,7 +26,5 @@ var netConfig = testnet;
 
 
 // contract address.
-// you can get it after deploying a smart-contract.
-// This is the testnet contract address.
-// TODO: change to mainnet contract address.
-var contractAddress = "n1uTuBwtFS3XaJsPHbSw3mXXqv8i72PNDvZ";
+// mainnet contract address.
+var contractAddress = "n1kZXt9dR9cLoh7dhaANbM38DLVNsdgCJuR";
