@@ -12,7 +12,7 @@ function makeBigCard(edit, data) {
 
     if (edit) {
         var rightbtn = document.getElementById("rightbtn");
-        rightbtn.textContent = "送我上墙";
+        rightbtn.textContent = "广播";
         rightbtn.onclick = function () {
             if (window.webExtensionWallet) {
                 saveLine({
@@ -35,10 +35,14 @@ function makeBigCard(edit, data) {
 
     var to = document.createElement("div");
     to.classList.add("to");
-    if (!edit) { to.title = data.to; }
+    if (!edit) { to.title = data.to || ""; }
     var tolabel = document.createElement("div");
     tolabel.classList.add("label");
-    tolabel.textContent = "To: ";
+    if (!edit && !data.to) {
+        tolabel.textContent = "";
+    } else {
+        tolabel.textContent = "To: ";
+    }
     var towhom = document.createElement(edit ? "input" : "div");
     towhom.classList.add("towhom");
     towhom[edit ? "value" : "textContent"] = edit ? "" : data.to;
@@ -58,10 +62,14 @@ function makeBigCard(edit, data) {
 
     var from = document.createElement("div");
     from.classList.add("from");
-    if (!edit) { from.title = data.from; }
+    if (!edit) { from.title = data.from || ""; }
     var fromlabel = document.createElement("div");
     fromlabel.classList.add("label");
-    fromlabel.textContent = "From: ";
+    if (!edit && !data.from) {
+        fromlabel.textContent = "";
+    } else {
+        fromlabel.textContent = "From: ";
+    }
     var fromwhom = document.createElement(edit ? "input" : "div");
     fromwhom.classList.add("fromwhom");
     fromwhom[edit ? "value" : "textContent"] = edit ? "" : data.from;
@@ -78,9 +86,7 @@ function makeCards(cards) {
     // only show at most 60 cards.
     if (cards.length === 0) {
         cards = [{
-            to: "nobody",
-            from: "nowhere",
-            say: "不好意思，看起来还没有人表白过呢？\n爱就大声说出来吧！"
+            say: "还没有人广播过呢~"
         }];
     }
     var num = Math.min(cards.length, 60);
@@ -110,17 +116,17 @@ function makeCards(cards) {
                     card.classList.add("card");
                     var to = document.createElement("div");
                     to.classList.add("to");
-                    to.title = msg.to;
-                    to.textContent = msg.to;
+                    to.title = msg.to || "";
+                    to.textContent = msg.to ? "To: " + msg.to : "";
                     var say = document.createElement("div");
                     say.classList.add("say");
                     var textarea = document.createElement("textarea");
                     textarea.disabled = "disabled";
-                    textarea.textContent = msg.say;
+                    textarea.textContent = msg.say || "";
                     var from = document.createElement("div");
                     from.classList.add("from");
-                    from.title = msg.from;
-                    from.textContent = msg.from;
+                    from.title = msg.from || "";
+                    from.textContent = msg.from ? "From: " + msg.from : "";
                     say.appendChild(textarea);
                     card.appendChild(to);
                     card.appendChild(say);
@@ -139,18 +145,19 @@ function makeCards(cards) {
     var leftbtn = document.getElementById("leftbtn")
     leftbtn.textContent = "使用说明";
     leftbtn.onclick = makeBigCard.bind(null, false, {
-        to: "亲爱的用户",
+        to: "尊敬的用户",
         from: "管理员先生",
-        say: "欢迎大家使用\"星云表白墙\"。\n" +
-            "你有没有遇到过这些情景。比如，当你想对父母表达对他们的爱和感恩，却迟迟无法启齿；再或者，当你和你的爱人想要镌刻永恒的见证，告诉全世界你们有多么相爱；又或者，当你暗恋一个人，却无法走进TA的生活，想悄悄告诉TA……\n" +
-            "此时，你需要的就是\"星云表白墙\"！在这里，你只要花费少量的金钱，就可以在表白墙上留下自己的印记，它是永恒的且永远不可更改。\n" +
-            "现在点击“我要表白”，开始向你爱的人吐露心声吧！\n" +
-            "注意，请文明发言，不要花费金钱制造垃圾信息，谢谢。\n" + "如果您想打赏，让我今晚可以吃顿好的，我将感激不尽！打赏请在发起交易时直接修改金额即可。"
+        say: "欢迎大家。\n" +
+            "在这里，您可以将您想说的话，广播到全世界，让全世界听到您的声音。\n" +
+            "并且，只需要花费极少量的金钱，就可以将您在这里留下的言语永久保存到云端。\n" +
+            "注意，请文明发言，不要花费金钱制造垃圾信息，谢谢。\n" +
+            "如果您想打赏，让我今晚可以吃顿好的，我将感激不尽~\n" +
+            "打赏请在发起交易时直接修改金额即可。"
     });
 
     // set right button.
     var rightbtn = document.getElementById("rightbtn");
-    rightbtn.textContent = "我要表白";
+    rightbtn.textContent = "我要广播";
     rightbtn.onclick = makeBigCard.bind(null, true);
 }
 
@@ -158,11 +165,6 @@ function init() {
     getLinesUsingNebulasJS(function (resp) {
         if (resp.result) {
             window.cards = JSON.parse(resp.result);
-            window.cards = window.cards.map((c, i) => ({
-                to: c.to || "一个幸福的人",
-                from: c.from || "一个有爱的人",
-                say: c.say || "一些没有勇气说出的话。"
-            }));
             makeCards(window.cards);
         } else {
             console.error(resp.execute_err);

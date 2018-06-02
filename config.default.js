@@ -27,4 +27,4 @@ var netConfig = mainnet;
 
 // contract address.
 // mainnet contract address.
-var contractAddress = "n1kZXt9dR9cLoh7dhaANbM38DLVNsdgCJuR";
+var contractAddress = "n1ueAgYQTL1QsZRsSH46FNPUQp7rwNAMw32";

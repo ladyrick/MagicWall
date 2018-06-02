@@ -91,17 +91,6 @@ body {
     background: white;
 }
 
-#bigcard::before {
-    content: "";
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    left: -40px;
-    top: -40px;
-    background-image: url(../img/iconfont-heart.svg);
-    background-size: 80px 80px;
-}
-
 #bigcard .to,
 #bigcard .from {
     height: 60px;
@@ -195,19 +184,6 @@ body {
     cursor: pointer;
 }
 
-.card::before {
-    content: "";
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    left: 0;
-    top: 0;
-    margin-left: -20px;
-    margin-top: -20px;
-    background-image: url(../img/iconfont-heart.svg);
-    background-size: 40px 40px;
-}
-
 .card .to,
 .card .from {
     white-space: nowrap;
@@ -222,16 +198,8 @@ body {
     background: rgb(195, 195, 255);
 }
 
-.card .to::before {
-    content: "To: ";
-}
-
 .card .from {
     text-align: right;
-}
-
-.card .from::before {
-    content: "From: ";
 }
 
 .card .say {
