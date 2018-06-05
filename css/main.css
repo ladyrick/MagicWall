@@ -19,7 +19,7 @@ body {
 #container {
     width: 1000px;
     height: 650px;
-    background: #FDEEB2;
+    background: rgba(253, 238, 178, 0.85);
     position: absolute;
     left: 50%;
     right: 50%;
