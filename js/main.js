@@ -47,7 +47,7 @@ function makeBigCard(edit, data) {
     }
     var towhom = document.createElement(edit ? "input" : "div");
     towhom.classList.add("towhom");
-    towhom.setAttribute("placeholder", edit ? "您打算向谁倾诉？" : "");
+    towhom.setAttribute("placeholder", edit ? "您打算向谁倾诉？(非必填)" : "");
     towhom[edit ? "value" : "textContent"] = edit ? "" : data.to;
     to.appendChild(tolabel);
     to.appendChild(towhom);
@@ -61,7 +61,7 @@ function makeBigCard(edit, data) {
         textarea.disabled = "disabled";
         textarea.textContent = data.say;
     } else {
-        textarea.setAttribute("placeholder", "真的不打算说点什么吗？");
+        textarea.setAttribute("placeholder", "真的不打算说点什么吗？(非必填)");
     }
     say.appendChild(textarea);
 
@@ -80,7 +80,7 @@ function makeBigCard(edit, data) {
     }
     var fromwhom = document.createElement(edit ? "input" : "div");
     fromwhom.classList.add("fromwhom");
-    fromwhom.setAttribute("placeholder", edit ? "请问怎么称呼您？" : "");
+    fromwhom.setAttribute("placeholder", edit ? "请问怎么称呼您？(非必填)" : "");
     fromwhom[edit ? "value" : "textContent"] = edit ? "" : data.from;
     from.appendChild(fromwhom);
     from.appendChild(fromlabel);
