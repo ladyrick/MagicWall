@@ -9,14 +9,37 @@
     <script src="config.default.js"></script>
     <script src="config.js"></script>
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="icon" href="img/horn.png" />
+    <link rel="shortcut icon" href="img/horn.png" />
 </head>
 
 <body>
+    <canvas id="background"></canvas>
     <div id="container">
         <div id="title">
             <div>大喇叭</div>
         </div>
         <div id="content">
+            <div class="spinner" id="spinner">
+                <div class="spinner-container container1">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+                <div class="spinner-container container2">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+                <div class="spinner-container container3">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+            </div>
             <div id="bigcard" class="vanish"></div>
             <div id="cardgroup" class="vanish"></div>
         </div>
@@ -37,6 +60,7 @@
             <a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet/blob/master/README.md">点我</a>查看安装chrome扩展程序教程
         </div>
     </div>
+    <script src="js/bg.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
 </body>

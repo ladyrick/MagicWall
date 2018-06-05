@@ -35,7 +35,9 @@ function makeBigCard(edit, data) {
 
     var to = document.createElement("div");
     to.classList.add("to");
-    if (!edit) { to.title = data.to || ""; }
+    if (!edit) {
+        to.title = data.to || "";
+    }
     var tolabel = document.createElement("div");
     tolabel.classList.add("label");
     if (!edit && !data.to) {
@@ -45,6 +47,7 @@ function makeBigCard(edit, data) {
     }
     var towhom = document.createElement(edit ? "input" : "div");
     towhom.classList.add("towhom");
+    towhom.setAttribute("placeholder", edit ? "您打算向谁倾诉？" : "");
     towhom[edit ? "value" : "textContent"] = edit ? "" : data.to;
     to.appendChild(tolabel);
     to.appendChild(towhom);
@@ -53,16 +56,21 @@ function makeBigCard(edit, data) {
     var say = document.createElement("div");
     say.classList.add("say");
     var textarea = document.createElement("textarea");
+
     if (!edit) {
         textarea.disabled = "disabled";
         textarea.textContent = data.say;
+    } else {
+        textarea.setAttribute("placeholder", "真的不打算说点什么吗？");
     }
     say.appendChild(textarea);
 
 
     var from = document.createElement("div");
     from.classList.add("from");
-    if (!edit) { from.title = data.from || ""; }
+    if (!edit) {
+        from.title = data.from || "";
+    }
     var fromlabel = document.createElement("div");
     fromlabel.classList.add("label");
     if (!edit && !data.from) {
@@ -72,6 +80,7 @@ function makeBigCard(edit, data) {
     }
     var fromwhom = document.createElement(edit ? "input" : "div");
     fromwhom.classList.add("fromwhom");
+    fromwhom.setAttribute("placeholder", edit ? "请问怎么称呼您？" : "");
     fromwhom[edit ? "value" : "textContent"] = edit ? "" : data.from;
     from.appendChild(fromwhom);
     from.appendChild(fromlabel);
@@ -150,9 +159,7 @@ function makeCards(cards) {
         say: "欢迎大家。\n" +
             "在这里，您可以将您想说的话，广播到全世界，让全世界听到您的声音。\n" +
             "并且，只需要花费极少量的金钱，就可以将您在这里留下的言语永久保存到云端。\n" +
-            "注意，请文明发言，不要花费金钱制造垃圾信息，谢谢。\n" +
-            "如果您想打赏，让我今晚可以吃顿好的，我将感激不尽~\n" +
-            "打赏请在发起交易时直接修改金额即可。"
+            "注意，请文明发言，不要花费金钱制造垃圾信息，谢谢。"
     });
 
     // set right button.
@@ -163,11 +170,14 @@ function makeCards(cards) {
 
 function init() {
     getLinesUsingNebulasJS(function (resp) {
+        document.getElementById("spinner").classList.add("vanish");
         if (resp.result) {
             window.cards = JSON.parse(resp.result);
             makeCards(window.cards);
         } else {
             console.error(resp.execute_err);
+            window.cards = { to: "", from: "", say: "看起来发生了一些错误呢。试着检查一下网络连接？" };
+            makeCards(window.cards);
         }
     });
 }
