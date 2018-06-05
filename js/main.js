@@ -173,6 +173,7 @@ function init() {
         document.getElementById("spinner").classList.add("vanish");
         if (resp.result) {
             window.cards = JSON.parse(resp.result);
+            window.cards.sort(() => Math.random() - 0.5);
             makeCards(window.cards);
         } else {
             console.error(resp.execute_err);
