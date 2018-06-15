@@ -45,11 +45,6 @@ function getLinesUsingNebulasJS(listener) {
                 args: ""
             }
         }).then(listener)
-            .catch(function (err) {
-                console.error(err);
-            });
-    }).catch(function (err) {
-        console.error(err);
     });
 }
 
@@ -229,7 +224,7 @@ function testGetSize(listener) {
     });
 }
 
-function testSaveManyLines(lines, listener){
+function testSaveManyLines(lines, listener) {
     var to = contractAddress;
     var value = 0;
     var callFunction = "saveManyLines";

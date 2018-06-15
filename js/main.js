@@ -94,9 +94,7 @@ function makeBigCard(edit, data) {
 function makeCards(cards) {
     // only show at most 60 cards.
     if (cards.length === 0) {
-        cards = [{
-            say: "还没有人广播过呢~"
-        }];
+        cards = [{ say: "还没有人广播过呢~" }];
     }
     var num = Math.min(cards.length, 60);
     var pages = Math.ceil(num / 6);
@@ -176,8 +174,8 @@ function init() {
             window.cards.sort(() => Math.random() - 0.5);
             makeCards(window.cards);
         } else {
-            console.error(resp.execute_err);
-            window.cards = { to: "", from: "", say: "看起来发生了一些错误呢。试着检查一下网络连接？" };
+            console.warn(resp.execute_err);
+            window.cards = [{ to: "", from: "", say: "看起来发生了一些错误呢。试着检查一下网络连接？" }];
             makeCards(window.cards);
         }
     });

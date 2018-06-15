@@ -13,9 +13,11 @@ class MagicWall {
                     return new BigNumber(str);
                 }
             },
-            mainnet_or_testnet: null
+            mainnet_or_testnet: null,
+            comment_count: null
         });
         LocalContractStorage.defineMapProperty(this, "storage");
+        LocalContractStorage.defineMapProperty(this, "comments");
     }
     init() {
         this.size = 0;
@@ -74,6 +76,15 @@ class MagicWall {
         } else {
             this._consolelog("Received: " + JSON.stringify(line));
             throw new Error("An object is required. Format: {to:\"to\",from:\"from\",say:\"say\"}");
+        }
+    }
+    _pushComment(comment) {
+        if ("cmt" in comment && "from" in comment) {
+            this.comments.set(this.comment_count, comment);
+            this.comment_count++;
+            return this.comment_count - 1;
+        } else {
+            throw new Error("The comment is invalid.");
         }
     }
     updateAdminAddress(address) {
@@ -216,6 +227,28 @@ class MagicWall {
         var line = this.storage.get(id);
         line.id = id
         return line;
+    }
+    addComment(id, comment) {
+        var line = getByID(id);
+        if (!line.commentIDs) {
+            line.commentIDs = [];
+        }
+        line.commentIDs.push(this._pushComment(comment));
+    }
+    getComment(id) {
+        var line = getByID(id);
+        var comments = [];
+        for (var cid of line.commentIDs) {
+            comments.push(this.comments.get(cid));
+        }
+        return comments;
+    }
+    thumbUp(id) {
+        var line = getByID(id);
+        if (!line.thumbs) {
+            line.thumbs = [];
+        }
+        line.thumbs.push(Blockchain.transaction.from);
     }
 }
 
