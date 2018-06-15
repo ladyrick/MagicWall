@@ -134,10 +134,25 @@ function makeCards(cards) {
                     from.classList.add("from");
                     from.title = msg.from || "";
                     from.textContent = msg.from ? "From: " + msg.from : "";
+                    var comments = document.createElement("div");
+                    comments.classList.add("comment");
+                    var thumbimg = document.createElement("img");
+                    thumbimg.setAttribute("src", "img/thumb_up_gray.svg");
+                    var thumbnum = document.createElement("div");
+                    thumbnum.textContent = msg.thumbs ? msg.thumbs.length : 0;
+                    var commentimg = document.createElement("img");
+                    commentimg.setAttribute("src", "img/comment.svg");
+                    var commentnum = document.createElement("div");
+                    commentnum.textContent = msg.commentIDs ? msg.commentIDs.length : 0;
+                    comments.appendChild(thumbimg);
+                    comments.appendChild(thumbnum);
+                    comments.appendChild(commentimg);
+                    comments.appendChild(commentnum);
                     say.appendChild(textarea);
                     card.appendChild(to);
                     card.appendChild(say);
                     card.appendChild(from);
+                    card.appendChild(comments);
                     card.onclick = (function (msg) {
                         return makeBigCard.bind(null, false, msg);
                     })(msg);
