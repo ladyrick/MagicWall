@@ -6,10 +6,10 @@ class MagicWall {
             size: null,
             adminAddress: null,
             vault: {
-                stringify: function(obj) {
+                stringify: function (obj) {
                     return obj.toString();
                 },
-                parse: function(str) {
+                parse: function (str) {
                     return new BigNumber(str);
                 }
             },
@@ -70,6 +70,8 @@ class MagicWall {
     }
     _saveOneLine(line) {
         if (typeof line === "object" && "to" in line && "from" in line && "say" in line) {
+            line.commentIDs = [];
+            line.thumbs = [];
             this.storage.set(this.size, line);
             this.size++;
             this._consolelog("Saved in storage: " + JSON.stringify(line));
@@ -234,15 +236,11 @@ class MagicWall {
     }
     addComment(id, comment) {
         var line = this.getByID(id);
-        if (!line.commentIDs) {
-            line.commentIDs = [];
-        }
         line.commentIDs.push(this._pushComment(comment));
         this.storage.set(id, line);
     }
     getComments(id) {
         var line = this.getByID(id);
-        if (!line.commentIDs) return [];
         var comments = [];
         for (var cid of line.commentIDs) {
             comments.push(this.comments.get(cid));
@@ -251,11 +249,13 @@ class MagicWall {
     }
     thumbUp(id) {
         var line = this.getByID(id);
-        if (!line.thumbs) {
-            line.thumbs = [];
-        }
         line.thumbs.push(Blockchain.transaction.from);
         this.storage.set(id, line);
+    }
+    unThumbUp(id) {
+        var line = this.getByID(id);
+        var index = line.thumbs.indexOf(Blockchain.transaction.from);
+        line.thumbs.splice(index, 1);
     }
 }
 
