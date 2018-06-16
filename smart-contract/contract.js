@@ -6,10 +6,10 @@ class MagicWall {
             size: null,
             adminAddress: null,
             vault: {
-                stringify: function (obj) {
+                stringify: function(obj) {
                     return obj.toString();
                 },
-                parse: function (str) {
+                parse: function(str) {
                     return new BigNumber(str);
                 }
             },
@@ -24,6 +24,7 @@ class MagicWall {
         this.adminAddress = Blockchain.transaction.from;
         this.vault = new BigNumber(0);
         this.mainnet_or_testnet = Blockchain.block.height > 100000;
+        this.comment_count = 0;
     }
 
     // admin functions:
@@ -79,7 +80,7 @@ class MagicWall {
         }
     }
     _pushComment(comment) {
-        if ("cmt" in comment && "from" in comment) {
+        if ("comment" in comment && "from" in comment) {
             this.comments.set(this.comment_count, comment);
             this.comment_count++;
             return this.comment_count - 1;
@@ -165,6 +166,9 @@ class MagicWall {
 
 
     // user functions:
+    whoami() {
+        return Blockchain.transaction.from;
+    }
     save(line) {
         this._checkValue();
         this._saveOneLine(line);
@@ -229,14 +233,16 @@ class MagicWall {
         return line;
     }
     addComment(id, comment) {
-        var line = getByID(id);
+        var line = this.getByID(id);
         if (!line.commentIDs) {
             line.commentIDs = [];
         }
         line.commentIDs.push(this._pushComment(comment));
+        this.storage.set(id, line);
     }
-    getComment(id) {
-        var line = getByID(id);
+    getComments(id) {
+        var line = this.getByID(id);
+        if (!line.commentIDs) return [];
         var comments = [];
         for (var cid of line.commentIDs) {
             comments.push(this.comments.get(cid));
@@ -244,11 +250,12 @@ class MagicWall {
         return comments;
     }
     thumbUp(id) {
-        var line = getByID(id);
+        var line = this.getByID(id);
         if (!line.thumbs) {
             line.thumbs = [];
         }
         line.thumbs.push(Blockchain.transaction.from);
+        this.storage.set(id, line);
     }
 }
 

@@ -14,12 +14,18 @@ function makeBigCard(edit, data) {
         var rightbtn = document.getElementById("rightbtn");
         rightbtn.textContent = "广播";
         rightbtn.onclick = function () {
+            if (document.querySelector("#bigcard .say textarea").value === "") {
+                var warns = ["真的不打算说些什么吗？", "说些什么吧。", "不说些什么的话，无法保存哦。", "有必填项没填呢。"];
+                alert(warns[Math.floor(Math.random() * warns.length)]);
+                return;
+            }
             if (window.webExtensionWallet) {
                 saveLine({
                     to: towhom.value,
                     from: fromwhom.value,
                     say: textarea.value
                 }, function () {
+                    alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。")
                     makeCards(window.cards);
                 });
             } else {
@@ -61,7 +67,7 @@ function makeBigCard(edit, data) {
         textarea.disabled = "disabled";
         textarea.textContent = data.say;
     } else {
-        textarea.setAttribute("placeholder", "真的不打算说点什么吗？(非必填)");
+        textarea.setAttribute("placeholder", "说些什么吧。(必填)");
     }
     say.appendChild(textarea);
 
@@ -182,14 +188,15 @@ function makeCards(cards) {
 }
 
 function init() {
-    getLinesUsingNebulasJS(function (resp) {
+    getWalletAddress();
+    getLines(function (resp) {
         document.getElementById("spinner").classList.add("vanish");
-        if (resp.result) {
+        if (resp.success) {
             window.cards = JSON.parse(resp.result);
             window.cards.sort(() => Math.random() - 0.5);
             makeCards(window.cards);
         } else {
-            console.warn(resp.execute_err);
+            console.error(resp.execute_err);
             window.cards = [{ to: "", from: "", say: "看起来发生了一些错误呢。试着检查一下网络连接？" }];
             makeCards(window.cards);
         }

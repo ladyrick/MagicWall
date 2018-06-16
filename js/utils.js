@@ -2,28 +2,44 @@
 
 var nebPay = new (require("nebpay"))();
 
-function log(str) {
-    console.log("%c" + str.toString(), "color:red");
+function nebPayCall(callObj, sim = false) {
+    // { func: func, args: args, listener: listener }
+    log("use nebPay " + (sim ? "simulateCall" : "call"));
+    console.log(callObj);
+    if (window.webExtensionWallet === "for nebulas") {
+        return nebPay[sim ? "simulateCall" : "call"](
+            contractAddress,
+            0,
+            callObj.func,
+            callObj.args ? JSON.stringify(callObj.args) : "",
+            {
+                debug: false,
+                callback: netConfig.callbackURL,
+                listener: function (resp) {
+                    if (resp.execute_err === "" || (sim && resp.execute_err === "insufficient balance")) {
+                        resp.success = true;
+                    } else {
+                        resp.success = false;
+                    }
+                    if (callObj.listener)
+                        return callObj.listener(resp);
+                }
+            });
+    } else if (sim) {
+        console.warn("nebPay extension not installed. using nebulas.js lib.");
+        return nebSimCall(callObj);
+    } else {
+        console.error("nebPay extension not installed!");
+        return "";
+    }
 }
 
-function getLines(listener) {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "get";
-    var callArgs = "";
-    nebPay.simulateCall(to, value, callFunction, callArgs, {
-        goods: {
-            name: "get",
-            desc: "get words"
-        },
-        callback: netConfig.callbackURL,
-        listener: listener
-    });
-}
-
-function getLinesUsingNebulasJS(listener) {
-    var HttpRequest = require("nebulas").HttpRequest;
-    var Neb = require("nebulas").Neb;
+function nebSimCall(callObj) {
+    log("use nebulas.js call");
+    console.log(callObj);
+    var Nebulas = require("nebulas");
+    var HttpRequest = Nebulas.HttpRequest;
+    var Neb = Nebulas.Neb;
     var neb = new Neb();
     neb.setRequest(new HttpRequest(netConfig.callbackURL));
 
@@ -41,27 +57,72 @@ function getLinesUsingNebulasJS(listener) {
             gasPrice: 1000000,
             gasLimit: 2000000,
             contract: {
-                function: "get",
-                args: ""
+                function: callObj.func,
+                args: callObj.args ? JSON.stringify(callObj.args) : "",
             }
-        }).then(listener)
+        }).then(function (resp) {
+            if (resp.execute_err === "" || resp.execute_err === "insufficient balance") {
+                resp.success = true;
+            } else {
+                resp.success = false;
+            }
+            if (callObj.listener)
+                return callObj.listener(resp);
+        })
     });
+    return "";
+}
+
+function log(str) {
+    console.log("%c" + str.toString(), "color:red");
+}
+
+function getWalletAddress() {
+    if (window.walletAddress) return;
+    nebPayCall({
+        func: "whoami",
+        listener: function (resp) {
+            if (resp.success) {
+                window.walletAddress = JSON.parse(resp.result);
+            }
+        }
+    }, true);
+}
+
+function getLines(listener) {
+    nebPayCall({ func: "get", listener: listener }, true);
 }
 
 function saveLine(line, listener) {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "save";
-    var callArgs = JSON.stringify([line]);
-    log(callArgs);
-    nebPay.call(to, value, callFunction, callArgs, {
-        goods: {
-            name: "add",
-            desc: "add words"
-        },
-        callback: netConfig.callbackURL,
+    nebPayCall({
+        func: "save",
+        args: [line],
         listener: listener
     });
+}
+
+function addComment(id, comment, listener) {
+    nebPayCall({
+        func: "addComment",
+        args: [id, comment],
+        listener: listener
+    });
+}
+
+function thumbUp(id, listener) {
+    nebPayCall({
+        func: "thumbUp",
+        args: [id],
+        listener: listener
+    });
+}
+
+function getComments(id, listener) {
+    nebSimCall({
+        func: "getComments",
+        args: [id],
+        listener: listener
+    })
 }
 
 function deployContract(contractSourceCode, listener) {
@@ -69,7 +130,7 @@ function deployContract(contractSourceCode, listener) {
         console.error("Contract source code needed.");
         return;
     }
-    var serialNumber = nebPay.deploy(contractSourceCode, "js", "", {
+    nebPay.deploy(contractSourceCode, "js", "", {
         goods: {
             name: "deploy",
             desc: "deploy smart-contract"
@@ -81,162 +142,6 @@ function deployContract(contractSourceCode, listener) {
             if (typeof (listener) === "function") {
                 listener(resp);
             }
-        }
-    });
-}
-
-function testSaveLine1() {
-    saveLine({ to: 1, from: 2, say: 3 });
-}
-function testSaveLine2() {
-    saveLine({ to: 1, from: 2 });
-}
-
-function testSaveLine3() {
-    saveLine(JSON.stringify({ to: 1, from: 2, say: 3 }));
-}
-
-function testWithdrawNASToAdmin() {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "withdrawNASToAdmin";
-    var callArgs = JSON.stringify([0]);
-    nebPay.call(to, value, callFunction, callArgs, {
-        goods: {
-            name: "withdraw",
-            desc: "withdraw NAS to admin"
-        },
-        callback: netConfig.callbackURL,
-        listener: null
-    });
-}
-
-function testGetVault() {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "getVault";
-    var callArgs = "";
-    nebPay.simulateCall(to, value, callFunction, callArgs, {
-        goods: {
-            name: "testGetVault",
-            desc: "test getVault function"
-        },
-        callback: netConfig.callbackURL,
-        listener: function (resp) {
-            if (!resp.execute_err) {
-                log("vault: " + JSON.parse(resp.result));
-            }
-        }
-    });
-}
-
-function testUpdateAdminAddress() {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "updateAdminAddress";
-    var callArgs = JSON.stringify(["n1SQe5d1NKHYFMKtJ5sNHPsSPVavGzW71Wy"]);
-    nebPay.call(to, value, callFunction, callArgs, {
-        goods: {
-            name: "testUpdateAdminAddress",
-            desc: "test updateAdminAddress function"
-        },
-        callback: netConfig.callbackURL,
-        listener: null
-    });
-}
-
-function testGet() {
-    function testOneGet(arg) {
-        var to = contractAddress;
-        var value = 0;
-        var callFunction = "get";
-        var callArgs = arg === undefined ? "" : JSON.stringify([arg]);
-        nebPay.simulateCall(to, value, callFunction, callArgs, {
-            goods: {
-                name: "testGet",
-                desc: "test get function"
-            },
-            callback: netConfig.callbackURL,
-            listener: function (resp) {
-                log(callArgs);
-                console.log(resp);
-            }
-        });
-    }
-    testOneGet();
-    testOneGet(2);
-    testOneGet(0);
-    testOneGet(-1);
-    testOneGet(100);
-    testOneGet([1, 2, 3]);
-}
-
-function testGetByID(id, listener) {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "getByID";
-    var callArgs = JSON.stringify([id]);
-    nebPay.simulateCall(to, value, callFunction, callArgs, {
-        goods: {
-            name: "testGetByID",
-            desc: "test getByID function"
-        },
-        callback: netConfig.callbackURL,
-        listener: function (resp) {
-            log(callArgs);
-            console.log(resp);
-        }
-    });
-}
-
-function testDeleteBadLines(ids, listener) {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "deleteBadLines";
-    var callArgs = JSON.stringify([ids]);
-    nebPay.call(to, value, callFunction, callArgs, {
-        goods: {
-            name: "testDeleteBadLines",
-            desc: "test deleteBadLines function"
-        },
-        callback: netConfig.callbackURL,
-        listener: function (resp) {
-            log(callArgs);
-            console.log(resp);
-        }
-    });
-}
-
-function testGetSize(listener) {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "getSize";
-    var callArgs = "";
-    nebPay.simulateCall(to, value, callFunction, callArgs, {
-        goods: {
-            name: "testGetSize",
-            desc: "test getSize function"
-        },
-        callback: netConfig.callbackURL,
-        listener: function (resp) {
-            console.log(resp);
-        }
-    });
-}
-
-function testSaveManyLines(lines, listener) {
-    var to = contractAddress;
-    var value = 0;
-    var callFunction = "saveManyLines";
-    var callArgs = JSON.stringify([lines]);
-    nebPay.call(to, value, callFunction, callArgs, {
-        goods: {
-            name: "testSaveManyLines",
-            desc: "test saveManyLines function"
-        },
-        callback: netConfig.callbackURL,
-        listener: function (resp) {
-            console.log(resp);
         }
     });
 }
