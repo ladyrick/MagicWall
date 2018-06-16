@@ -16,10 +16,14 @@ function nebPayCall(callObj, sim = false) {
                 debug: false,
                 callback: netConfig.callbackURL,
                 listener: function (resp) {
-                    if (resp.execute_err === "" || (sim && resp.execute_err === "insufficient balance")) {
-                        resp.success = true;
+                    if (!sim) {
+                        console.warn("please check serialnumber instead of callback function.");
                     } else {
-                        resp.success = false;
+                        if (resp.execute_err === "" || resp.execute_err === "insufficient balance") {
+                            resp.success = true;
+                        } else {
+                            resp.success = false;
+                        }
                     }
                     if (callObj.listener)
                         return callObj.listener(resp);
@@ -112,6 +116,13 @@ function addComment(id, comment, listener) {
 function thumbUp(id, listener) {
     nebPayCall({
         func: "thumbUp",
+        args: [id],
+        listener: listener
+    });
+}
+function thumbDown(id, listener) {
+    nebPayCall({
+        func: "thumbDown",
         args: [id],
         listener: listener
     });

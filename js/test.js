@@ -97,11 +97,24 @@ function testAddComment2() {
 }
 
 function testThumbUp() {
-    thumbUp(0);
+    thumbUp(0, (resp) => console.log(resp));
+}
+function testThumbDown() {
+    thumbDown(0, (resp) => console.log(resp));
 }
 
 function testGetComments() {
     getComments(0, function (resp) {
         console.log(resp);
     });
+}
+
+function testGetPrivateByID(id) {
+    nebPayCall({
+        func: "getPrivateByID",
+        args: [id],
+        listener: function (resp) {
+            console.log(JSON.parse(resp.result));
+        }
+    }, true);
 }

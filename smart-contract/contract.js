@@ -1,6 +1,6 @@
 "use strict";
 
-class MagicWall {
+class DApp {
     constructor() {
         LocalContractStorage.defineProperties(this, {
             size: null,
@@ -13,7 +13,6 @@ class MagicWall {
                     return new BigNumber(str);
                 }
             },
-            mainnet_or_testnet: null,
             comment_count: null
         });
         LocalContractStorage.defineMapProperty(this, "storage");
@@ -23,21 +22,12 @@ class MagicWall {
         this.size = 0;
         this.adminAddress = Blockchain.transaction.from;
         this.vault = new BigNumber(0);
-        this.mainnet_or_testnet = Blockchain.block.height > 100000;
         this.comment_count = 0;
     }
 
-    // admin functions:
-    _consolelog() {
-        if (this.mainnet_or_testnet) {
-            return;
-        }
-        var args = Array.prototype.slice.call(arguments);
-        console.log.apply(null, args);
-    }
+    // private functions:
     _validateAdmin() {
         if (Blockchain.transaction.from === this.adminAddress) {
-            this._consolelog("admin validated successfully.");
             return true;
         } else {
             throw new Error("Permission denied.");
@@ -49,7 +39,6 @@ class MagicWall {
         if (value.toString() !== "0") {
             this.vault = this.vault.plus(value);
         }
-        this._consolelog("Entry value: " + value.toString() + " wei.");
     }
     _transfer(address, value) {
         var result = Blockchain.transfer(address, value);
@@ -57,7 +46,6 @@ class MagicWall {
             throw new Error("Transfer failed.");
             return;
         }
-        this._consolelog("Transfer result: ", result);
         Event.Trigger("transfer", {
             Transfer: {
                 from: Blockchain.transaction.to,
@@ -66,7 +54,6 @@ class MagicWall {
             }
         });
         this.vault = this.vault.sub(value);
-        this._consolelog(value.toString() + " wei transfered to " + address);
     }
     _saveOneLine(line) {
         if (typeof line === "object" && "to" in line && "from" in line && "say" in line) {
@@ -74,10 +61,7 @@ class MagicWall {
             line.thumbs = [];
             this.storage.set(this.size, line);
             this.size++;
-            this._consolelog("Saved in storage: " + JSON.stringify(line));
-            this._consolelog("There are " + this.size + " lines in storage.");
         } else {
-            this._consolelog("Received: " + JSON.stringify(line));
             throw new Error("An object is required. Format: {to:\"to\",from:\"from\",say:\"say\"}");
         }
     }
@@ -90,6 +74,36 @@ class MagicWall {
             throw new Error("The comment is invalid.");
         }
     }
+    _checkedID(id) {
+        if (typeof id !== "number") {
+            throw new Error("ID must be a positive integer!");
+        }
+        id = parseInt(id);
+        if (id < 0) {
+            throw new Error("ID must be a positive integer!");
+        }
+        if (id >= this.size) {
+            throw new Error("Not found.");
+        }
+        return id;
+    }
+    _getByID(id) {
+        var line = this.storage.get(id);
+        return {
+            private: line,
+            public: {
+                id: id,
+                to: line.to,
+                say: line.say,
+                from: line.from,
+                comment_count: line.commentIDs.length,
+                thumb_count: line.thumbs.length,
+                is_thumb_up: line.thumbs.indexOf(Blockchain.transaction.from) !== -1
+            }
+        };
+    }
+
+    // admin functions:
     updateAdminAddress(address) {
         if (!this._validateAdmin()) {
             return;
@@ -98,7 +112,6 @@ class MagicWall {
         var addressType = Blockchain.verifyAddress(address)
         if (addressType === 87) {
             this.adminAddress = address;
-            this._consolelog("Admin address updated to " + this.adminAddress);
         } else if (addressType === 88) {
             throw new Error("This address is a smart-contract address! A user wallet address is required.");
         } else {
@@ -116,14 +129,12 @@ class MagicWall {
             throw new Error("The address is not a valid user wallet address!");
         }
         this._transfer(address, this.vault);
-        this._consolelog(this.vault.toString() + " wei remained.");
     }
     getVault() {
         if (!this._validateAdmin()) {
             return;
         }
         this._checkValue();
-        this._consolelog(this.vault.toString() + " wei in this contract.");
         return this.vault.toString();
     }
     getSize() {
@@ -145,8 +156,6 @@ class MagicWall {
         for (var id of ids.sort((i, j) => j - i)) {
             if (typeof id === "number" && id >= 0 && id < this.size) {
                 id = parseInt(id);
-                this._consolelog("deleted:");
-                this._consolelog(this.storage.get(id));
                 this.storage.set(id, this.storage.get(this.size - 1));
                 this.storage.set(this.size - 1, { to: "deleted", from: "deleted", say: "deleted" });
                 this.size--;
@@ -165,10 +174,19 @@ class MagicWall {
             this._saveOneLine(line);
         }
     }
+    getPrivateByID(id) {
+        if (!this._validateAdmin()) {
+            return;
+        }
+        this._checkValue();
+        var id = this._checkedID(id);
+        return this._getByID(id).private;
+    }
 
 
     // user functions:
     whoami() {
+        this._checkValue();
         return Blockchain.transaction.from;
     }
     save(line) {
@@ -182,7 +200,8 @@ class MagicWall {
         if (typeof number !== "number") {
             throw new Error("Input type error! A number required.");
         }
-        this._consolelog("Ask for " + number + " lines.");
+        number = parseInt(number);
+
         if (number > 60 && !this._validateAdmin()) {
             throw new Error("Only admin could get more than 60 lines.");
         }
@@ -210,37 +229,27 @@ class MagicWall {
         }
 
         var storage_get = [];
-        for (let i of randomPick(this.size, number)) {
-            var line = this.storage.get(i);
-            line.id = i
-            storage_get.push(line);
+        for (let id of randomPick(this.size, number)) {
+            storage_get.push(this._getByID(id).public);
         }
-        this._consolelog("Get from storage:");
-        this._consolelog(storage_get);
         return storage_get;
     }
     getByID(id) {
-        if (typeof id !== "number") {
-            throw new Error("ID must be a positive integer!");
-        }
-        id = parseInt(id);
-        if (id < 0) {
-            throw new Error("ID must be a positive integer!");
-        }
-        if (id >= this.size) {
-            throw new Error("Not found.");
-        }
-        var line = this.storage.get(id);
-        line.id = id
-        return line;
+        this._checkValue();
+        var id = this._checkedID(id);
+        return this._getByID(id).public;
     }
     addComment(id, comment) {
-        var line = this.getByID(id);
+        this._checkValue();
+        var id = this._checkedID(id);
+        var line = this._getByID(id).private;
         line.commentIDs.push(this._pushComment(comment));
         this.storage.set(id, line);
     }
     getComments(id) {
-        var line = this.getByID(id);
+        this._checkValue();
+        var id = this._checkedID(id);
+        var line = this._getByID(id).private;
         var comments = [];
         for (var cid of line.commentIDs) {
             comments.push(this.comments.get(cid));
@@ -248,15 +257,24 @@ class MagicWall {
         return comments;
     }
     thumbUp(id) {
-        var line = this.getByID(id);
-        line.thumbs.push(Blockchain.transaction.from);
-        this.storage.set(id, line);
+        this._checkValue();
+        var id = this._checkedID(id);
+        var line = this._getByID(id).private;
+        if (line.thumbs.indexOf(Blockchain.transaction.from) === -1) {
+            line.thumbs.push(Blockchain.transaction.from);
+            this.storage.set(id, line);
+        }
     }
-    unThumbUp(id) {
-        var line = this.getByID(id);
+    thumbDown(id) {
+        this._checkValue();
+        var id = this._checkedID(id);
+        var line = this._getByID(id).private;
         var index = line.thumbs.indexOf(Blockchain.transaction.from);
-        line.thumbs.splice(index, 1);
+        if (index !== -1) {
+            line.thumbs.splice(index, 1);
+            this.storage.set(id, line);
+        }
     }
 }
 
-module.exports = MagicWall;
+module.exports = DApp;
