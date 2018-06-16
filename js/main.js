@@ -1,16 +1,17 @@
 "use strict";
 
-function makeBigCard(edit, data) {
+function makeBigCard(mode, data) {
     document.getElementById("cardgroup").classList.add("vanish");
     document.getElementById("dots").classList.add("vanish");
     var bigcard = document.getElementById("bigcard");
-    bigcard.classList.remove("vanish");
+    bigcard.classList = "";
     bigcard.innerHTML = "";
     var leftbtn = document.getElementById("leftbtn");
     leftbtn.textContent = "返回";
     leftbtn.onclick = makeCards.bind(null, window.cards);
 
-    if (edit) {
+    if (mode === "new") {
+        bigcard.classList.add("new");
         var rightbtn = document.getElementById("rightbtn");
         rightbtn.textContent = "广播";
         rightbtn.onclick = function () {
@@ -28,25 +29,29 @@ function makeBigCard(edit, data) {
                 makeCards(window.cards);
             });
         };
+    } else if (mode === "intro") {
+        bigcard.classList.add("intro");
+    } else {
+        bigcard.classList.add("show");
     }
 
 
     var to = document.createElement("div");
     to.classList.add("to");
-    if (!edit) {
+    if (mode !== "new") {
         to.title = data.to || "";
     }
     var tolabel = document.createElement("div");
     tolabel.classList.add("label");
-    if (!edit && !data.to) {
+    if (mode !== "new" && !data.to) {
         tolabel.textContent = "";
     } else {
         tolabel.textContent = "To: ";
     }
-    var towhom = document.createElement(edit ? "input" : "div");
+    var towhom = document.createElement(mode === "new" ? "input" : "div");
     towhom.classList.add("towhom");
-    towhom.setAttribute("placeholder", edit ? "您打算向谁倾诉？(非必填)" : "");
-    towhom[edit ? "value" : "textContent"] = edit ? "" : data.to;
+    towhom.setAttribute("placeholder", mode === "new" ? "您打算向谁倾诉？(非必填)" : "");
+    towhom[mode === "new" ? "value" : "textContent"] = mode === "new" ? "" : data.to;
     to.appendChild(tolabel);
     to.appendChild(towhom);
 
@@ -55,7 +60,7 @@ function makeBigCard(edit, data) {
     say.classList.add("say");
     var textarea = document.createElement("textarea");
 
-    if (!edit) {
+    if (mode !== "new") {
         textarea.disabled = "disabled";
         textarea.textContent = data.say;
     } else {
@@ -66,23 +71,39 @@ function makeBigCard(edit, data) {
 
     var from = document.createElement("div");
     from.classList.add("from");
-    if (!edit) {
+    if (mode !== "new") {
         from.title = data.from || "";
     }
     var fromlabel = document.createElement("div");
     fromlabel.classList.add("label");
-    if (!edit && !data.from) {
+    if (mode !== "new" && !data.from) {
         fromlabel.textContent = "";
     } else {
         fromlabel.textContent = "From: ";
     }
-    var fromwhom = document.createElement(edit ? "input" : "div");
+    var fromwhom = document.createElement(mode === "new" ? "input" : "div");
     fromwhom.classList.add("fromwhom");
-    fromwhom.setAttribute("placeholder", edit ? "请问怎么称呼您？(非必填)" : "");
-    fromwhom[edit ? "value" : "textContent"] = edit ? "" : data.from;
+    fromwhom.setAttribute("placeholder", mode === "new" ? "请问怎么称呼您？(非必填)" : "");
+    fromwhom[mode === "new" ? "value" : "textContent"] = mode === "new" ? "" : data.from;
     from.appendChild(fromwhom);
     from.appendChild(fromlabel);
-
+    if (mode === "show") {
+        var comment = document.createElement("div");
+        comment.classList.add("comment");
+        var thumbimg = document.createElement("img");
+        thumbimg.setAttribute("src", "img/thumb_up_red.svg");
+        var thumbnum = document.createElement("div");
+        thumbnum.textContent = data.thumbs ? data.thumbs.length : 0;
+        var commentimg = document.createElement("img");
+        commentimg.setAttribute("src", "img/comment.svg");
+        var commentnum = document.createElement("div");
+        commentnum.textContent = data.commentIDs ? data.commentIDs.length : 0;
+        comment.appendChild(thumbimg);
+        comment.appendChild(thumbnum);
+        comment.appendChild(commentimg);
+        comment.appendChild(commentnum);
+        from.appendChild(comment);
+    }
 
     bigcard.appendChild(to);
     bigcard.appendChild(say);
@@ -132,8 +153,8 @@ function makeCards(cards) {
                     from.classList.add("from");
                     from.title = msg.from || "";
                     from.textContent = msg.from ? "From: " + msg.from : "";
-                    var comments = document.createElement("div");
-                    comments.classList.add("comment");
+                    var comment = document.createElement("div");
+                    comment.classList.add("comment");
                     var thumbimg = document.createElement("img");
                     thumbimg.setAttribute("src", "img/thumb_up_gray.svg");
                     var thumbnum = document.createElement("div");
@@ -142,17 +163,17 @@ function makeCards(cards) {
                     commentimg.setAttribute("src", "img/comment.svg");
                     var commentnum = document.createElement("div");
                     commentnum.textContent = msg.commentIDs ? msg.commentIDs.length : 0;
-                    comments.appendChild(thumbimg);
-                    comments.appendChild(thumbnum);
-                    comments.appendChild(commentimg);
-                    comments.appendChild(commentnum);
+                    comment.appendChild(thumbimg);
+                    comment.appendChild(thumbnum);
+                    comment.appendChild(commentimg);
+                    comment.appendChild(commentnum);
                     say.appendChild(textarea);
                     card.appendChild(to);
                     card.appendChild(say);
                     card.appendChild(from);
-                    card.appendChild(comments);
+                    card.appendChild(comment);
                     card.onclick = (function (msg) {
-                        return makeBigCard.bind(null, false, msg);
+                        return makeBigCard.bind(null, "show", msg);
                     })(msg);
                     cardgroup.appendChild(card);
                 }
@@ -164,19 +185,19 @@ function makeCards(cards) {
     // set left button.
     var leftbtn = document.getElementById("leftbtn")
     leftbtn.textContent = "使用说明";
-    leftbtn.onclick = makeBigCard.bind(null, false, {
+    leftbtn.onclick = makeBigCard.bind(null, "intro", {
         to: "尊敬的用户",
         from: "管理员先生",
         say: "欢迎大家。\n" +
-            "在这里，您可以将您想说的话，广播到全世界，让全世界听到您的声音。\n" +
-            "并且，只需要花费极少量的金钱，就可以将您在这里留下的言语永久保存到云端。\n" +
+            "这里，您可以将您想说的话，广播到全世界，让全世界听到您的声音。\n" +
+            "只需要花费极少量的金钱，就可以将您的言语永久保存到云端。\n" +
             "注意，请文明发言，不要花费金钱制造垃圾信息，谢谢。"
     });
 
     // set right button.
     var rightbtn = document.getElementById("rightbtn");
     rightbtn.textContent = "我要广播";
-    rightbtn.onclick = makeBigCard.bind(null, true);
+    rightbtn.onclick = makeBigCard.bind(null, "new");
 }
 
 function init() {

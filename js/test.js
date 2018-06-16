@@ -78,7 +78,14 @@ function testGetSize(listener) {
     }, true);
 }
 
-function testSaveManyLines(lines) {
+function testSaveManyLines() {
+    var lines = [];
+    for (var i = 0; i < 100; i++)
+        lines.push({
+            to: "to" + i,
+            say: "say" + i,
+            from: "from" + i
+        });
     nebPayCall({
         func: "saveManyLines",
         args: [lines],

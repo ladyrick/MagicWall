@@ -17,16 +17,16 @@ body {
 }
 
 #container {
-    width: 1000px;
-    height: 650px;
+    width: 1130px;
+    height: 700px;
     background: rgba(253, 238, 178, 0.85);
     position: absolute;
     left: 50%;
     right: 50%;
     top: 50%;
     bottom: 50%;
-    margin-left: -500px;
-    margin-top: -325px;
+    margin-left: -565px;
+    margin-top: -350px;
     box-shadow: 0 0 5px 0 #FDEEB2;
     z-index: -2;
 }
@@ -35,7 +35,7 @@ body {
 #container::after {
     content: "";
     position: absolute;
-    width: 1020px;
+    width: 1150px;
     height: 14px;
     border-radius: 7px;
     background-size: 50px 15px;
@@ -82,8 +82,8 @@ body {
 
 #content {
     position: relative;
-    width: 800px;
-    height: 482px;
+    width: 900px;
+    height: 540px;
     margin: 30px auto;
 }
 
@@ -95,10 +95,12 @@ body {
 
 #bigcard {
     position: absolute;
-    left: 100px;
-    right: 100px;
-    top: 51px;
-    bottom: 51px;
+    left: 50%;
+    width: 700px;
+    margin-left: -350px;
+    top: 50%;
+    height: 440px;
+    margin-top: -220px;
     background: white;
 }
 
@@ -136,7 +138,7 @@ body {
 
 #bigcard .to .towhom {
     float: left;
-    width: 480px;
+    width: 580px;
 }
 
 #bigcard .from .label {
@@ -146,23 +148,49 @@ body {
 
 #bigcard .from .fromwhom {
     float: right;
-    max-width: 450px;
 }
 
-#bigcard .from input.fromwhom {
-    width: 450px;
+#bigcard.show .from .fromwhom {
+    max-width: 260px;
+}
+
+#bigcard.intro .from .fromwhom {
+    max-width: 550px;
+}
+
+#bigcard.new .from .fromwhom {
+    width: 550px;
+}
+
+#bigcard .from .comment {
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+#bigcard .from .comment img {
+    height: 30px;
+}
+
+#bigcard .from .comment div {
+    height: 60px;
+    line-height: 60px;
+    min-width: 50px;
+    max-width: 90px;
+    margin: 0 10px;
+    text-align: left;
 }
 
 #bigcard .say {
-    height: 270px;
-    overflow-x: hidden;
-    margin-bottom: -10px;
+    height: 320px;
+    overflow: hidden;
 }
 
 #bigcard .say textarea {
-    width: 550px;
-    height: 240px;
-    padding: 10px 40px;
+    width: 620px;
+    height: 300px;
+    padding: 0 60px 10px 40px;
+    margin: 10px 0 0 0;
     resize: none;
     font-size: 20px;
     border: none;
@@ -190,7 +218,7 @@ body {
 .card {
     position: relative;
     background: white;
-    width: 210px;
+    width: 260px;
     height: 230px;
     cursor: pointer;
 }
@@ -214,15 +242,15 @@ body {
 }
 
 .card .say {
-    height: 130px;
-    overflow-x: hidden;
-    margin-bottom: -10px;
+    height: 120px;
+    overflow: hidden;
 }
 
 .card .say textarea {
-    width: 190px;
+    width: 240px;
     height: 100px;
-    padding: 10px 20px;
+    padding: 0 20px 10px 20px;
+    margin: 10px 0 0 0;
     resize: none;
     font-size: 16px;
     border: none;
@@ -245,19 +273,16 @@ body {
 
 .card .comment img {
     height: 20px;
-    width: 20px;
-}
-
-.card .comment img {
-    margin-left: 20px;
 }
 
 .card .comment div {
     height: 20px;
     line-height: 20px;
     font-size: 16px;
-    width: 35px;
-    text-align: center;
+    min-width: 50px;
+    max-width: 80px;
+    margin: 0 5px;
+    text-align: left;
 }
 
 #control {
@@ -298,15 +323,18 @@ body {
     height: 10px;
     background: rgb(145, 145, 145);
     border-radius: 10px;
-    margin: 0 5px;
+    margin: 0 7px;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+#dots div:hover {
+    transform: scale(1.3);
 }
 
 #dots div.active {
     background: rgb(97, 97, 97);
-    width: 12px;
-    height: 12px;
-    margin: 0 4px;
+    transform: scale(1.3);
 }
 
 #pop {
