@@ -19,22 +19,14 @@ function makeBigCard(edit, data) {
                 alert(warns[Math.floor(Math.random() * warns.length)]);
                 return;
             }
-            if (window.webExtensionWallet) {
-                saveLine({
-                    to: towhom.value,
-                    from: fromwhom.value,
-                    say: textarea.value
-                }, function () {
-                    alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。")
-                    makeCards(window.cards);
-                });
-            } else {
-                var pop = document.getElementById("pop");
-                pop.classList.remove("vanish");
-                pop.onclick = function () {
-                    pop.classList.add("vanish");
-                }
-            }
+            saveLine({
+                to: towhom.value,
+                from: fromwhom.value,
+                say: textarea.value
+            }, function () {
+                alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。")
+                makeCards(window.cards);
+            });
         };
     }
 

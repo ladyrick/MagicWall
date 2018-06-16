@@ -34,6 +34,7 @@ function nebPayCall(callObj, sim = false) {
         return nebSimCall(callObj);
     } else {
         console.error("nebPay extension not installed!");
+        promptExtensionWallet();
         return "";
     }
 }
@@ -79,6 +80,14 @@ function nebSimCall(callObj) {
 
 function log(str) {
     console.log("%c" + str.toString(), "color:red");
+}
+
+function promptExtensionWallet() {
+    var pop = document.getElementById("pop");
+    pop.classList.remove("vanish");
+    pop.onclick = function () {
+        pop.classList.add("vanish");
+    }
 }
 
 function getWalletAddress() {
