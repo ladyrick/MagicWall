@@ -91,13 +91,20 @@ function makeBigCard(mode, data) {
         var comment = document.createElement("div");
         comment.classList.add("comment");
         var thumbimg = document.createElement("img");
-        thumbimg.setAttribute("src", "img/thumb_up_red.svg");
+        if (data.is_thumb_up) {
+            var color = "red";
+            thumbimg.onclick = thumbDown.bind(null, data.id);
+        } else {
+            var color = "gray";
+            thumbimg.onclick = thumbUp.bind(null, data.id);
+        }
+        thumbimg.setAttribute("src", "img/thumb_up_" + color + ".svg");
         var thumbnum = document.createElement("div");
-        thumbnum.textContent = data.thumbs ? data.thumbs.length : 0;
+        thumbnum.textContent = data.thumb_count;
         var commentimg = document.createElement("img");
         commentimg.setAttribute("src", "img/comment.svg");
         var commentnum = document.createElement("div");
-        commentnum.textContent = data.commentIDs ? data.commentIDs.length : 0;
+        commentnum.textContent = data.comment_count;
         comment.appendChild(thumbimg);
         comment.appendChild(thumbnum);
         comment.appendChild(commentimg);
