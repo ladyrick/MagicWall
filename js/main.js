@@ -48,7 +48,7 @@ function makeCards(cards) {
                     var thumbimg = document.createElement("img");
                     if (msg.is_thumb_up) {
                         var color = "red";
-                        thumbimg.onclick = (function () {
+                        thumbimg.onclick = (function (msg) {
                             return thumbDown.bind(null, msg.id, function () {
                                 alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                                 makeBigCard("show", msg);
@@ -56,7 +56,7 @@ function makeCards(cards) {
                         })(msg);
                     } else {
                         var color = "gray";
-                        thumbimg.onclick = (function () {
+                        thumbimg.onclick = (function (msg) {
                             return thumbUp.bind(null, msg.id, function () {
                                 alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                                 makeBigCard("show", msg);
@@ -74,14 +74,13 @@ function makeCards(cards) {
                             document.getElementById("bigcard").classList = "vanish";
                             document.getElementById("cardgroup").classList = "vanish";
                             getComments(msg.id, function (resp) {
-                                console.log(resp);
                                 if (resp.success) {
                                     var comments = JSON.parse(resp.result);
                                     if (comments.length === 0) {
-                                        comments = [{ comment: "糟糕，还没有人评论过呢。", from: "系统消息" }];
+                                        comments = [{ comment: "糟糕，还没有人评论过呢。", from: "系统提示" }];
                                     }
                                 } else {
-                                    var comments = [{ comment: "获取评论时发生了错误……", from: "系统消息" }];
+                                    var comments = [{ comment: "获取评论时发生了错误……", from: "系统提示" }];
                                 }
                                 showComments(msg, comments);
                             });
@@ -117,8 +116,8 @@ function makeCards(cards) {
         to: "尊敬的用户",
         from: "管理员先生",
         say: "欢迎大家。\n" +
-            "这里，您可以将您想说的话，广播到全世界，让全世界听到您的声音。\n" +
-            "只需要花费极少量的金钱，就可以将您的言语永久保存到云端。\n" +
+            "这里，你可以将你的想法，广播到全世界，让全世界听到你的声音。\n" +
+            "只需要花费极少量的金钱，就可以将你的言语永久保存到云端。\n" +
             "注意，请文明发言，不要花费金钱制造垃圾信息，谢谢。"
     });
 
@@ -229,14 +228,13 @@ function makeBigCard(mode, data) {
                 document.getElementById("bigcard").classList = "vanish";
                 document.getElementById("cardgroup").classList = "vanish";
                 getComments(msg.id, function (resp) {
-                    console.log(resp);
                     if (resp.success) {
                         var comments = JSON.parse(resp.result);
                         if (comments.length === 0) {
-                            comments = [{ comment: "糟糕，还没有人评论过呢。", from: "系统消息" }];
+                            comments = [{ comment: "糟糕，还没有人评论过呢。", from: "系统提示" }];
                         }
                     } else {
-                        var comments = [{ comment: "获取评论时发生了错误……", from: "系统消息" }];
+                        var comments = [{ comment: "获取评论时发生了错误……", from: "系统提示" }];
                     }
                     showComments(msg, comments);
                 });
@@ -317,7 +315,14 @@ function showComments(data, comments) {
     for (var c of comments) {
         var oneComment = document.createElement("div");
         var from = document.createElement("strong");
-        from.textContent = (c.from ? c.from.substring(0, 10) : "匿名用户") + ": ";
+        if (c.from.length > 15) {
+            var fromtext = c.from.substring(0, 15) + "…";
+        } else if (c.from.length === 0) {
+            var fromtext = "匿名用户";
+        } else {
+            var fromtext = c.from;
+        }
+        from.textContent = fromtext + ": ";
         oneComment.appendChild(from);
         oneComment.appendChild(document.createTextNode(c.comment));
         commentList.appendChild(oneComment);
@@ -387,7 +392,6 @@ function init() {
         });
     } else {
         getByID(parseInt(window.localStorage.id), function (resp) {
-            console.log(resp);
             document.getElementById("spinner").classList.add("vanish");
             if (resp.success) {
                 var bigcard = JSON.parse(resp.result);

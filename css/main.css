@@ -63,7 +63,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 250px;
+    width: 550px;
     height: 60px;
     background: #F0F0F0;
     margin: -30px auto 0;
@@ -123,6 +123,8 @@ body {
     outline: none;
     color: inherit;
     background: transparent;
+    font-size: inherit;
+    line-height: inherit;
 }
 
 #bigcard .to {
