@@ -1,2 +1,2 @@
-txhash: 14957f2c555453a795b939826ddedcf0faa3387b4efcd98154cb9508a1bfd69f
-contractaddress: n1ueAgYQTL1QsZRsSH46FNPUQp7rwNAMw32
+txhash: 9ffc7a2ce8e0e4161ff0967ac69979437e90993759bbeb0128bae90ff35a4ef8
+contractaddress: n1ftx4V2q9zrRZGp2ZXtjybFYToZjrJhMUK
