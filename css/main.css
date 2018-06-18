@@ -65,7 +65,7 @@ body {
     align-items: center;
     width: 250px;
     height: 60px;
-    background: #f0f0f0;
+    background: #F0F0F0;
     margin: -30px auto 0;
     border-radius: 10px;
 }
@@ -117,8 +117,6 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: inherit;
-    font-family: inherit;
     height: inherit;
     border: none;
     padding: 0;
@@ -170,6 +168,11 @@ body {
 
 #bigcard .from .comment img {
     height: 30px;
+    cursor: pointer;
+}
+
+#bigcard .from .comment img:hover {
+    transform: scale(1.2);
 }
 
 #bigcard .from .comment div {
@@ -203,6 +206,81 @@ body {
     outline: none;
 }
 
+#bigcard .content {
+    height: 60px;
+    font-size: 24px;
+    line-height: 60px;
+    padding: 0 40px;
+    background: #F4C4C4;
+}
+
+#bigcard .content div {
+    height: inherit;
+    background: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float: left;
+}
+
+#bigcard .content div:first-child {
+    max-width: 520px;
+}
+
+#bigcard .content div:last-child {
+    width: 100px;
+    text-align: center;
+}
+
+#bigcard .commentlist {
+    height: 320px;
+    font-size: 20px;
+    overflow-y: scroll;
+}
+
+#bigcard .commentlist div {
+    padding: 10px 40px;
+    word-wrap: break-word;
+}
+
+#bigcard .commentlist div:hover {
+    background: #F0F0F0;
+    transition: 0.3s;
+}
+
+#bigcard .addcomment {
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#bigcard .addcomment textarea {
+    width: 550px;
+    height: 45px;
+    padding: 5px;
+    border: none;
+    box-shadow: 0 0 0 1px #F0F0F0;
+    resize: none;
+    float: left;
+    font-family: inherit;
+    font-size: 16px;
+    color: inherit;
+}
+
+#bigcard .addcomment div {
+    float: left;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+    background: #F0F0F0;
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
 #cardgroup {
     position: absolute;
     left: 0;
@@ -220,7 +298,6 @@ body {
     background: white;
     width: 260px;
     height: 230px;
-    cursor: pointer;
 }
 
 .card .to,
@@ -231,6 +308,7 @@ body {
     height: 40px;
     line-height: 40px;
     padding: 0 20px;
+    cursor: pointer;
 }
 
 .card .to {
@@ -244,6 +322,7 @@ body {
 .card .say {
     height: 120px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .card .say textarea {
@@ -273,6 +352,11 @@ body {
 
 .card .comment img {
     height: 20px;
+    cursor: pointer;
+}
+
+.card .comment img:hover {
+    transform: scale(1.2);
 }
 
 .card .comment div {

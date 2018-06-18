@@ -44,7 +44,11 @@
             <div id="cardgroup" class="vanish"></div>
         </div>
         <div id="control">
-            <div id="leftbtn" class="btn">使用说明</div>
+            <div id="leftbtn" class="btn">
+                <script>
+                    document.write(window.localStorage.leftbtn || "使用说明");
+                </script>
+            </div>
             <div id="dots"></div>
             <div id="rightbtn" class="btn">我要广播</div>
         </div>

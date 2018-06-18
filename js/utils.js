@@ -106,6 +106,10 @@ function getLines(listener) {
     nebPayCall({ func: "get", listener: listener }, true);
 }
 
+function getByID(id, listener) {
+    nebPayCall({ func: "getByID", args: [id], listener: listener }, true);
+}
+
 function saveLine(line, listener) {
     nebPayCall({
         func: "save",
