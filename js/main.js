@@ -323,6 +323,7 @@ function showComments(data, comments) {
         var from = document.createElement("strong");
         if (c.from.length > 15) {
             var fromtext = c.from.substring(0, 15) + "…";
+            from.title = fromtext;
         } else if (c.from.length === 0) {
             var fromtext = "匿名用户";
         } else {
