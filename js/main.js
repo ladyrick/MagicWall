@@ -102,6 +102,9 @@ function makeCards(cards) {
                             return makeBigCard.bind(null, "show", msg);
                         })(msg);
                     cardgroup.appendChild(card);
+                    if (textarea.scrollHeight > say.clientHeight - 10) {
+                        textarea.classList.add("scroll");
+                    }
                 }
             }
         })(i, dot);
@@ -253,6 +256,10 @@ function makeBigCard(mode, data) {
     bigcard.appendChild(say);
     bigcard.appendChild(from);
 
+    if (textarea.scrollHeight > say.clientHeight - 10) {
+        textarea.classList.add("scroll");
+    }
+
     // set left button.
     var leftbtn = document.getElementById("leftbtn");
     leftbtn.textContent = "返回";
@@ -288,7 +295,6 @@ function makeBigCard(mode, data) {
 }
 
 function showComments(data, comments) {
-    // comments = [{ comment: "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest", from: "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest" }]; comments = comments.concat(comments, comments, comments, comments, comments, comments, comments, comments, comments, comments, comments, comments, comments);
     localStorage.page = "bigcard";
     var id = data.id;
     localStorage.id = data.id;
@@ -302,8 +308,8 @@ function showComments(data, comments) {
     var content = document.createElement("div");
     content.classList.add("content");
     var textContent = document.createElement("div");
-    textContent.textContent = data.say;
-    textContent.title = data.say;
+    textContent.textContent = data.say || "";
+    textContent.title = data.say || "";
     var labelContent = document.createElement("div");
     labelContent.textContent = "的评论";
     content.appendChild(textContent);

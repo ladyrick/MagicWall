@@ -194,7 +194,7 @@ body {
 #bigcard .say textarea {
     width: 620px;
     height: 300px;
-    padding: 0 60px 10px 40px;
+    padding: 0 40px 10px 40px;
     margin: 10px 0 0 0;
     resize: none;
     font-size: 20px;
@@ -202,6 +202,11 @@ body {
     background: transparent;
     color: black;
     font-family: inherit;
+}
+
+#bigcard .say textarea.scroll {
+    width: 640px;
+    padding: 0 60px 10px 40px;
 }
 
 #bigcard .say textarea:focus {
@@ -328,7 +333,7 @@ body {
 }
 
 .card .say textarea {
-    width: 240px;
+    width: 220px;
     height: 100px;
     padding: 0 20px 10px 20px;
     margin: 10px 0 0 0;
@@ -339,6 +344,10 @@ body {
     color: black;
     font-family: inherit;
     cursor: pointer;
+}
+
+.card .say textarea.scroll {
+    width: 240px;
 }
 
 .card .say textarea:focus {
