@@ -456,8 +456,15 @@ body {
     box-shadow: 0 0 0 5px rgba(195, 195, 255, 0.8);
 }
 
-#pop div::before {
+#pop.oops div::before{
     content: "Oops!!";
+}
+
+#pop.note div::before{
+    content: "Note"
+}
+
+#pop div::before {
     text-align: left;
     background: rgba(195, 195, 255, 0.8);
     display: block;

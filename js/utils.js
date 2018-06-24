@@ -5,6 +5,7 @@ var nebPay = new (require("nebpay"))();
 function nebPayCall(callObj, sim = false) {
     // { func: func, args: args, listener: listener }
     log("use nebPay " + (sim ? "simulateCall" : "call"));
+    if (!sim) myalert("请在星云钱包插件上完成交易。\n直接关闭插件窗口或者点击Reject按钮可以取消交易。", 10000)
     console.log(callObj);
     if (window.webExtensionWallet === "for nebulas") {
         return nebPay[sim ? "simulateCall" : "call"](
@@ -16,7 +17,13 @@ function nebPayCall(callObj, sim = false) {
                 debug: false,
                 callback: netConfig.callbackURL,
                 listener: function (resp) {
+                    if (typeof resp === "string") {
+                        myalert("您取消了交易！", 1000);
+                        return;
+                    }
+
                     if (!sim) {
+                        myalert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。", 3000);
                         console.warn("please check serialnumber instead of callback function.");
                     } else {
                         if (resp.execute_err === "" || resp.execute_err === "insufficient balance") {
@@ -84,10 +91,25 @@ function log(str) {
 
 function promptExtensionWallet() {
     var pop = document.getElementById("pop");
-    pop.classList.remove("vanish");
+    pop.innerHTML = '<div>看起来，您还没有安装星云钱包的chrome扩展程序哦。<br> 将数据保存在云端需要发起交易，支付一定的交易费用。<br> 安装插件可以帮助您更方便地发起交易。<br> 没有插件的话，相信我，发起交易将变得非常繁琐。<br><a href="https://codeload.github.com/ChengOrangeJu/WebExtensionWallet/zip/master">点我</a>下载星云钱包chrome扩展程序<br><a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet/blob/master/README.md">点我</a>查看安装chrome扩展程序教程</div>';
+    pop.classList = "oops";
     pop.onclick = function () {
         pop.classList.add("vanish");
     }
+}
+
+function myalert(msg, holdtime = 3000) {
+    clearTimeout(window.poptimeout);
+    var pop = document.getElementById("pop");
+    pop.innerHTML = '<div>' + msg.replace("\n", "<br>") + '</div>';
+    pop.classList = "note";
+    window.poptimeout = setTimeout(function () {
+        pop.classList.add("vanish");
+    }, holdtime);
+    pop.onclick = function () {
+        pop.classList.add("vanish");
+        clearTimeout(window.poptimeout);
+    };
 }
 
 function getWalletAddress() {

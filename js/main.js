@@ -50,7 +50,6 @@ function makeCards(cards) {
                         var color = "red";
                         thumbimg.onclick = (function (msg) {
                             return thumbDown.bind(null, msg.id, function () {
-                                alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                                 makeBigCard("show", msg);
                             });
                         })(msg);
@@ -58,7 +57,6 @@ function makeCards(cards) {
                         var color = "gray";
                         thumbimg.onclick = (function (msg) {
                             return thumbUp.bind(null, msg.id, function () {
-                                alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                                 makeBigCard("show", msg);
                             });
                         })(msg);
@@ -210,13 +208,11 @@ function makeBigCard(mode, data) {
         if (data.is_thumb_up) {
             var color = "red";
             thumbimg.onclick = thumbDown.bind(null, data.id, function () {
-                alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                 makeBigCard("show", data);
             });
         } else {
             var color = "gray";
             thumbimg.onclick = thumbUp.bind(null, data.id, function () {
-                alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                 makeBigCard("show", data);
             });
         }
@@ -276,7 +272,7 @@ function makeBigCard(mode, data) {
         rightbtn.onclick = function () {
             if (document.querySelector("#bigcard .say textarea").value === "") {
                 var warns = ["真的不打算说些什么吗？", "说些什么吧。", "不说些什么的话，无法保存哦。", "有必填项没填呢。"];
-                alert(warns[Math.floor(Math.random() * warns.length)]);
+                myalert(warns[Math.floor(Math.random() * warns.length)], 1000);
                 return;
             }
             saveLine({
@@ -284,7 +280,6 @@ function makeBigCard(mode, data) {
                 from: fromwhom.value,
                 say: textarea.value
             }, function () {
-                alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                 makeCards(window.cards);
             });
         };
@@ -348,12 +343,11 @@ function showComments(data, comments) {
         return function () {
             var comment = textarea.value;
             if (comment === "") {
-                alert("还没写评论内容呢。");
+                myalert("还没写评论内容呢。", 1000);
                 return;
             }
             var from = prompt("请问怎么称呼您？不填则为匿名用户。");
             addComment(id, { comment: comment, from: from }, function () {
-                alert("将数据保存到链上需要一定时间，大约是30秒左右，因此无法立即显示。\n请过会儿刷新页面查看吧。");
                 textarea.value = "";
             });
         }
